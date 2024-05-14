@@ -145,7 +145,7 @@ class MainMap {
         this.applePositions = []; //随机生成苹果的位置
         this.enemyPosition = []; //随机产生怪兽的位置，暂时只产生3个
 
-        this.generateApples(3); // 生成3个苹果
+        // this.generateApples(myPetCareMode.affinity); // 生成3个苹果
     }
 
     generateApples(numApples) {
@@ -154,12 +154,12 @@ class MainMap {
             const randomX = Math.floor(Math.random() * (74 - 52)) + 52; // 在地图上52到74的数中间随机产生一个x的坐标
             const randomY = Math.floor(Math.random() * (15 - 5)) + 5; // 在地图上5到15的数中间随机产生一个y的坐标
 
+            //前面的那些给苹果
             if (i < numApples)
                 this.applePositions.push({
                     x: randomX,
                     y: randomY,
                 });
-            //前面的那些给苹果
             else this.enemyPosition.push({ x: randomX, y: randomY }); //最后的3个给怪兽
         }
     }
@@ -181,7 +181,7 @@ class MainMap {
                     item.x === this.playerPosition.x &&
                     item.y === this.playerPosition.y
             );
-            // console.log("applePositionIndex is", applePositionIndex);
+
             const takeApples = readlineSync.question(
                 `Herzlichen Glückwunsch zu ${randomApples} Äpfeln, ${randomFlours} Mehl und ${randomSugar} Zucker. Möchtest du sie behalten oder wegwerfen? (y/n)`
             );
@@ -293,7 +293,7 @@ class MainMap {
         // let flag = true;
         let move;
         if (restart === true) this.isRunning = true;
-        this.generateApples(3);
+        this.generateApples(myPetCareMode.affinity);
         while (this.isRunning) {
             console.log(this.isRunning);
             if (!this.isRunning) break;
@@ -350,8 +350,8 @@ class MainMap {
                 if (isPetCare === "y") {
                     this.isRunning = false;
                     goPetMap = true;
-                    myPetCareMode.name = petName;
-                    myPetCareMode.type = whichPet;
+                    // myPetCareMode.name = petName;
+                    // myPetCareMode.type = whichPet;
                     myPetCareMode.startPetCareMode();
                 }
             }
@@ -359,7 +359,8 @@ class MainMap {
             if (move.toLowerCase() === "q") {
                 this.isRunning = false;
                 console.log("Game over. Thanks for playing!");
-                break;
+                process.exit();
+                // break;
             }
 
             this.movePlayer(move.toLowerCase());
@@ -373,16 +374,17 @@ let applePie = 0;
 // const itemsList = { apple: 10, flour: 10, sugar: 10 };
 const WeaponsList = [
     { weaponName: "Stab des Feuers", weaponAttack: 15 },
-    { weaponName: "Donnerstab", weaponAttack: 15 },
-    { weaponName: "Engelstab", weaponAttack: 15 },
-    { weaponName: "Dunkelheitsstab", weaponAttack: 15 },
-    { weaponName: "Drachenstab", weaponAttack: 15 },
-    { weaponName: "Weisenstab", weaponAttack: 15 },
+    { weaponName: "Donnerstab", weaponAttack: 18 },
+    { weaponName: "Engelstab", weaponAttack: 16 },
+    { weaponName: "Dunkelheitsstab", weaponAttack: 25 },
+    { weaponName: "Drachenstab", weaponAttack: 22 },
+    { weaponName: "Weisenstab", weaponAttack: 20 },
 ];
 let isFight;
 let randomEnemy;
 let enemyType = "";
 let enemyRandom;
+// let enemyName = "";
 let canCook;
 class Pet {
     constructor(
@@ -454,7 +456,7 @@ class Pet {
 
     feed() {
         while (true) {
-            console.log(this.full);
+            // console.log(this.full);
             if (this.full === 10) {
                 // console.log(`I am full. I want to go to adventure`); // 显示不出来????
                 const getMessage = readlineSync.keyIn(
@@ -472,6 +474,9 @@ class Pet {
                     this.addFull(2);
                     this.addAffinity(3);
                     itemsList.apples--;
+                    readlineSync.keyInPause(
+                        `Du hast einen Apfel gegessen.dein Full-Eigenschaft erhöhte sich um 2, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 3.`
+                    );
                     // console.log("Full", this.full);
                     // console.log("affinity", this.affinity);
                     // petMaps.printPetMap();
@@ -481,6 +486,9 @@ class Pet {
                     this.addFull(5);
                     this.addAffinity(5);
                     applePie--;
+                    readlineSync.keyInPause(
+                        `Du hast einen Apfelkuchen gegessen.dein Full-Eigenschaft erhöhte sich um 5, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 5.`
+                    );
                 }
             } else if (applePie && !itemsList.apples) {
                 this.addFull(5);
@@ -489,12 +497,14 @@ class Pet {
                 readlineSync.keyInPause(
                     `Wir haben keine Äpfel, aber wir haben Apfelkuchen. Du kannst den Apfelkuchen essen.`
                 );
-                readlineSync.keyInPause(`Du hast einen Apfelkuchen gegessen.`);
+                readlineSync.keyInPause(
+                    `Du hast einen Apfelkuchen gegessen.dein Full-Eigenschaft erhöhte sich um 5, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 5.`
+                );
             } else if (!applePie && itemsList.apples) {
                 const makeFood = readlineSync.question(
-                    `Wir haben keine Apfelkuchen mehr, aber wir haben noch Äpfel. Möchtest du einen Apfelkuchen backen oder lieber Äpfel essen? (y für Apfelkuchen backen/n für Äpfel essen): `
+                    `Wir haben keine Apfelkuchen mehr, aber wir haben noch Äpfel. Möchtest du einen Apfelkuchen backen oder lieber Äpfel essen? (y für Apfelkuchen backen/ e für Äpfel essen): `
                 );
-                if (makeFood === "y") {
+                if (makeFood.toLowerCase() === "y") {
                     do {
                         this.cook(itemsList);
                         if (canCook) {
@@ -505,7 +515,7 @@ class Pet {
                             if (cookApplepie === "n") break;
                         } else {
                             readlineSync.keyInPause(
-                                "Wir haben nicht genug Rohstoffe, können Apfelkuchen nicht backen."
+                                "Wir haben nicht genug Rohstoffe Apfelkuchen zu backen."
                             );
                             // console.log(
                             //     "Wir haben nicht genug Rohstoffe, können Apfelkuchen nicht backen"
@@ -514,11 +524,13 @@ class Pet {
                         }
                     } while (canCook);
                 }
-                if (makeFood === "n") {
+                if (makeFood.toLowerCase() === "e") {
                     this.addFull(2);
                     this.addAffinity(3);
                     itemsList.apples--;
-                    console.log("you eat one apple.");
+                    readlineSync.keyInPause(
+                        `Du hast einen Apfel gegessen.dein Full-Eigenschaft erhöhte sich um 2, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 3.`
+                    );
                 }
             } else if (!applePie && !itemsList.apples)
                 readlineSync.keyInPause(
@@ -587,6 +599,7 @@ class Pet {
         let randomNumArr = [];
         this.randomNumForQuiz(randomNumArr);
         let round = 1;
+        console.log(`(${randomNumArr})`); //显示结果，为了尽快的显示
         while (true) {
             let result = [];
             const guess = readlineSync.question(
@@ -610,26 +623,29 @@ class Pet {
             if (result.every((e) => e === "🐃")) {
                 if (round <= 3) {
                     this.addIQ(10);
+                    this.addAffinity(5);
                     console.log(
                         `🎆 Wow,${chalk.blue(
                             petName
-                        )}, du bist wirklich großartig! Du hast es nur in ${round} Versuchen geschafft 🥇❗❗❗ 🎆`
+                        )}, du bist wirklich großartig! Du hast es nur in ${round} Versuchen geschafft 🥇❗❗❗ 🎆\nDein IQ-Egenschaft erhöhte sich um 10, deine Affinität-Egenschaft erhöhte sich ebenfalls um 5.`
                     );
                 }
                 if (round > 3 && round < 7) {
                     this.addIQ(6);
+                    this.addAffinity(3);
                     console.log(
                         `${chalk.blue(
                             petName
-                        )}, Du bist sehr gut, du hast es nur in ${round} Versuchen geschafft. Beim nächsten Mal wird es noch besser sein 🥈❗ `
+                        )}, Du bist sehr gut, du hast es nur in ${round} Versuchen geschafft. Beim nächsten Mal wird es noch besser sein 🥈❗\nDein IQ-Egenschaft erhöhte sich um 6, deine Affinität-Egenschaft erhöhte sich ebenfalls um 3. `
                     );
                 }
                 if (round >= 7) {
                     this.addIQ(3);
+                    this.addAffinity(1);
                     console.log(
                         `Herzlichen Glückwunsch,${chalk.blue(
                             petName
-                        )}, du hast es im ${round}ten Versuch geschafft. `
+                        )}, du hast es im ${round}ten Versuch geschafft. \nDein IQ-Egenschaft erhöhte sich um 3, deine Affinität-Egenschaft erhöhte sich ebenfalls um 1.`
                     );
                 }
                 // round = 1;
@@ -657,10 +673,11 @@ class Pet {
                     );
                 if (round === 10) {
                     this.reduceIQ(3);
+                    this.reduceAffinity(3);
                     console.log(
                         ` 😅 ,${chalk.blue(
                             petName
-                        )}, Spiel vorbei, du hast verloren. Ich wünsche Ihnen einen schönen Tag. Willkommen zur nächsten Herausforderung.`
+                        )}, Spiel vorbei, du hast verloren. Ich wünsche Ihnen einen schönen Tag. Willkommen zur nächsten Herausforderung. \nLeide dein IQ-Egenschaft wurde um 3 reduziert, deine Affinität-Egenschaft wurde um 3 reduziert.`
                     );
                     // round = 1;
                     // this.playAgain(randomNumArr);
@@ -683,7 +700,8 @@ class Pet {
 
     startPetCareMode() {
         let petCareModes;
-
+        myPetCareMode.name = petName;
+        myPetCareMode.type = whichPet;
         if (goPetMap === true) this.isPlaying = true;
         while (this.isPlaying) {
             petMaps.printPetMap();
@@ -725,45 +743,11 @@ class Pet {
     }
 
     //pet Adeventure
-    fight(enemy) {
-        while (true) {
-            enemy.HP = enemy.HP - (this.attack + this.weapons.weaponAttack);
-            enemy.HP <= 0 ? (enemy.HP = 0) : enemy.HP;
-
-            readlineSync.keyInPause(
-                `${petName} fight ${enemy.name}(enemy's HP is ${enemy.HP}), press any key to continue`
-            );
-            this.HP = this.HP - enemy.attack;
-            this.HP <= 0 ? (this.HP = 0) : this.HP;
-            readlineSync.keyInPause(
-                `${enemy.name} fight ${petName}(my HP is ${this.HP}), press any key to continue`
-            );
-            // console.log(
-            //     `${this.playerName} fight ${enemy.playerName}(${enemy.HP})`
-            // );
-            petMaps.printPetFightMap(); //每次HP变化时都要更新地图
-
-            if (enemy.HP <= 0) {
-                //怪兽血为零恢复满血，为下次作准备
-                enemy.HP = maxEnemyHP;
-                this.getWeapons(enemiesList[randomEnemy]);
-            }
-            if (this.HP <= 0) {
-                this.isFighting = false;
-                goPetMap = true;
-                readlineSync.keyInPause(
-                    `your HP is ${this.HP} now, you must be go home to heal. press any key to continue`
-                );
-                myPetCareMode.startPetCareMode();
-                break;
-            }
-        }
-    }
     fightOrGoHome(enemy) {
         if (this.HP > 50) {
             if (this.IQ > 15) {
                 isFight = readlineSync.keyIn(
-                    `Die HP des Feindes sind ${enemy.HP}, die Angriffskraft ist ${enemy.attack}; Deine HP sind ${this.HP}, deine Angriffskraft ist ${this.attack}. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                    `Die HP des Feindes sind ${enemy.HP}, die Angriffskraft ist ${enemy.attack}; Deine HP sind ${this.HP}, deine Angriffskraft ist ${this.attack}, Die Angriffskraft deiner Waffe (${this.weapons.weaponName}) beträgt ${this.weapons.weaponAttack} Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
                     { limit: "khe" }
                 );
             } else {
@@ -793,6 +777,28 @@ class Pet {
             );
         }
         if (isFight === "k") {
+            console.log(
+                `Deine Basisangriffskraft beträgt ${
+                    myPetCareMode.attack
+                }, du benutzt die Waffe ${
+                    myPetCareMode.weapons.weaponName
+                }, welche eine Angriffskraft von ${
+                    myPetCareMode.weapons.weaponAttack
+                } hat. Also beträgt deine Gesamtangriffskraft ${
+                    myPetCareMode.attack + myPetCareMode.weapons.weaponAttack
+                }.`
+            );
+            // readlineSync.keyInPause(
+            //     `Deine Basisangriffskraft beträgt ${
+            //         myPetCareMode.attack
+            //     }, du benutzt die Waffe ${
+            //         myPetCareMode.weapons.weaponName
+            //     }, welche eine Angriffskraft von ${
+            //         myPetCareMode.weapons.weaponAttack
+            //     } hat. Also beträgt deine Gesamtangriffskraft ${
+            //         myPetCareMode.attack + myPetCareMode.weapons.weaponAttack
+            //     }.`
+            // );
             this.fight(enemiesList[randomEnemy]);
         }
         if (isFight === "h") {
@@ -805,6 +811,91 @@ class Pet {
             gameInMainMap.start();
         }
     }
+    // fightOrGoHome(enemy) {
+    //     if (this.HP > 50) {
+    //         if (this.IQ > 15) {
+    //             isFight = readlineSync.keyIn(
+    //                 `Die HP des Feindes sind ${enemy.HP}, die Angriffskraft ist ${enemy.attack}; Deine HP sind ${this.HP}, deine Angriffskraft ist ${this.attack}. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+    //                 { limit: "khe" }
+    //             );
+    //         } else {
+    //             if (enemy.HP > this.HP && enemy.attack > this.attack) {
+    //                 isFight = readlineSync.keyIn(
+    //                     `Gefahr, du könntest wahrscheinlich umkommen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+    //                     { limit: "khe" }
+    //                 );
+    //             } else {
+    //                 isFight = readlineSync.keyIn(
+    //                     `Du hast möglicherweise die Möglichkeit, deinen Feind zu besiegen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+    //                     { limit: "khe" }
+    //                 );
+    //             }
+    //         }
+    //     } else if (this.HP === 0) {
+    //         this.isFighting = false;
+    //         goPetMap = true;
+    //         readlineSync.keyInPause(
+    //             `your HP is ${this.HP} now, you must be go home to heal. press any key to continue`
+    //         );
+    //         myPetCareMode.startPetCareMode();
+    //     } else {
+    //         isFight = readlineSync.keyIn(
+    //             `Deine Lebenspunkte sind zu niedrig. Es besteht die Möglichkeit, dass du im Kampf sterben wirst. Es wird empfohlen, zunächst nach Hause zu gehen und dich zu heilen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+    //             { limit: "khe" }
+    //         );
+    //     }
+    //     if (isFight === "k") {
+    //         this.fight(enemiesList[randomEnemy]);
+    //     }
+    //     if (isFight === "h") {
+    //         goPetMap = true;
+    //         // console.log(goPetMap);
+    //         // readlineSync.keyInPause("press any key to continue");
+    //         myPetCareMode.startPetCareMode();
+    //     }
+    //     if (isFight === "e") {
+    //         gameInMainMap.start();
+    //     }
+    // }
+    fight(enemy) {
+        while (true) {
+            enemy.HP = enemy.HP - (this.attack + this.weapons.weaponAttack);
+            enemy.HP <= 0 ? (enemy.HP = 0) : enemy.HP;
+
+            readlineSync.keyInPause(
+                `${petName} fight ${enemy.name}(enemy's HP is ${enemy.HP}), press any key to continue`
+            );
+            this.HP = this.HP - enemy.attack;
+            this.HP <= 0 ? (this.HP = 0) : this.HP;
+            readlineSync.keyInPause(
+                `${enemy.name} fight ${petName}(your HP is ${this.HP}), press any key to continue`
+            );
+            // console.log(
+            //     `${this.playerName} fight ${enemy.playerName}(${enemy.HP})`
+            // );
+            petMaps.printPetFightMap(); //每次HP变化时都要更新地图
+
+            if (enemy.HP <= 0) {
+                //怪兽血为零恢复满血，为下次作准备
+                enemy.HP = maxEnemyHP;
+                this.addAffinity(5);
+                this.reduceFull(5);
+                this.getWeapons(enemiesList[randomEnemy]);
+            }
+            if (this.HP <= 0) {
+                this.isFighting = false;
+                goPetMap = true;
+                this.reduceAffinity(5);
+                this.reduceFull(5);
+                readlineSync.keyInPause(
+                    `Deine HP beträgt jetzt ${this.HP}, du musst nach Hause gehen, um dich zu heilen. Drücke eine beliebige Taste, um fortzufahren.`
+                );
+                myPetCareMode.startPetCareMode();
+                break;
+            }
+        }
+    }
+
     getWeapons(enemy) {
         const randomWeaponIndex = Math.floor(
             Math.random() * WeaponsList.length
@@ -841,12 +932,14 @@ class Pet {
         // console.log(whichPet);
         // readlineSync.keyInPause("wait......");
         maxPetHP = myPetCareMode.HP;
-        randomEnemy = Math.floor(Math.random() * enemiesList.length);
-        enemyType = enemiesList[randomEnemy].type;
-        enemyRandom = enemiesList[randomEnemy];
-        maxEnemyHP = enemiesList[randomEnemy].HP;
+
         if (goToFight === true) this.isFighting = true;
         while (this.isFighting) {
+            randomEnemy = Math.floor(Math.random() * enemiesList.length);
+            enemyType = enemiesList[randomEnemy].type;
+            enemyRandom = enemiesList[randomEnemy];
+            maxEnemyHP = enemiesList[randomEnemy].HP;
+            // enemyName = enemiesList[randomEnemy].name;
             petMaps.printPetFightMap();
             // console.log(enemiesList[randomEnemy]);
             this.fightOrGoHome(enemiesList[randomEnemy]);
@@ -869,9 +962,9 @@ class Enemies {
     }
 }
 
-const goldEagle = new Enemies("Adlersturz", "Eagle", 100, 20);
-const zuBat = new Enemies("Nachtjäger", "Bat", 100, 20);
-const wolfsRuf = new Enemies("Einsamer Wolf", "Wolf", 100, 20);
+const goldEagle = new Enemies("Adlersturz", "Eagle", 120, 20);
+const zuBat = new Enemies("Nachtjäger", "Bat", 100, 10);
+const wolfsRuf = new Enemies("Einsamer Wolf", "Wolf", 140, 30);
 const enemiesList = [goldEagle, zuBat, wolfsRuf];
 
 //所有图片，宠物在家的模式和宠物战斗的模式
@@ -882,8 +975,8 @@ class AllPetMaps {
             "                                                                        ",
             `     __  _-==-=_,-.                                                     `,
             "     /--`'\\_@-@.--<                                                    ",
-            "     `--'\\ \\   <___/.                 ------- myName: -------         ",
-            `           \\ \\\   " /                 | full: ${myPetCareMode.full}`,
+            "     `--'\\ \\   <___/.                  ------- myName: -------         ",
+            `           \\ \\\   " /                  | full: ${myPetCareMode.full}`,
             `            >=\\_/'<                    | IQ: ${myPetCareMode.IQ}        `,
             `           /= | \\_|/                   | affinity: ${myPetCareMode.affinity}`,
             `          /===\\____/                   | HP: ${myPetCareMode.HP}       `,
@@ -955,30 +1048,30 @@ class AllPetMaps {
             "================================ 💓💓💓 ================================",
         ];
         this.mapTigerFight = [
-            "🐯=============== 💓🐯💓 ==============🐯",
-            `🛡️                                      🗡️`,
-            `🗡️                                      🛡️`,
-            `🛡️                                      🗡️`,
-            `🗡️                                      🛡️`,
-            `🛡️                                      🗡️`,
-            `🗡️           __  _-==-=_,-.             🛡️`,
-            "🛡️          /--`'\\_@-@.--<              🗡️",
-            "🗡️          `--'\\ \\   <___/.            🛡️",
-            `🛡️                \\ \\\   " /             🗡️`,
-            "🗡️                 >=\\_/`<              🛡️",
-            `🛡️                /= | \\_|/             🗡️`,
-            `🗡️               /===\\____/             🛡️`,
-            `🛡️                                      🗡️`,
-            "🗡️                                      🛡️",
-            `🛡️                                      🗡️`,
-            `🗡️                                      🛡️`,
-            `🛡️                                      🗡️`,
-            `🗡️                                      🛡️`,
-            `🛡️       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷       🗡️`,
-            `🗡️                                      🛡️`,
-            `🛡️      💟 🩶 💗   ♡❤️💖💙              🗡️`,
-            `🗡️                                      🛡️`,
-            "🐯=============== 💓🐯💓 ===============🐯",
+            "🐯================== 💓🐯💓 =================🐯",
+            `🛡️                                           🗡️`,
+            `🗡️                                           🛡️`,
+            `🛡️                                           🗡️`,
+            `🗡️                                           🛡️`,
+            `🛡️                                           🗡️`,
+            `🗡️           __  _-==-=_,-.                  🛡️`,
+            "🛡️          /--`'\\_@-@.--<                   🗡️",
+            "🗡️          `--'\\ \\   <___/.                 🛡️",
+            `🛡️                \\ \\\   " /                  🗡️`,
+            "🗡️                 >=\\_/`<                   🛡️",
+            `🛡️                /= | \\_|/                  🗡️`,
+            `🗡️               /===\\____/                  🛡️`,
+            `🛡️                                           🗡️`,
+            "🗡️                                           🛡️",
+            `🛡️                                           🗡️`,
+            `🗡️                                           🛡️`,
+            `🛡️                                           🗡️`,
+            `🗡️                                           🛡️`,
+            `     HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷                  `,
+            `🗡️                                           🛡️`,
+            `🛡️                                           🗡️`,
+            `🗡️                                           🛡️`,
+            "🐯================== 💓🐯💓 ==================🐯",
         ];
         this.mapMankyFight = [
             "🐵=============== 💓🐵💓 ===============🐵",
@@ -1000,9 +1093,9 @@ class AllPetMaps {
             `🗡️                                      🛡️`,
             `🛡️                                      🗡️`,
             `🗡️                                      🛡️`,
-            `🗡️       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷       🛡️`,
+            `       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷           `,
             `🛡️                                      🗡️`,
-            `🗡️      💟 🩶 💗                        🛡️`,
+            `🗡️                                      🛡️`,
             `🛡️                                      🗡️`,
             "🐵=============== 💓🐵💓 ===============🐵",
         ];
@@ -1026,9 +1119,9 @@ class AllPetMaps {
             `🗡️        *     W     *                 🛡️`,
             `🛡️          **     **                   🗡️`,
             `🗡️            *****                     🛡️`,
-            `🛡️       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷       🗡️`,
+            `       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷           `,
             `🗡️                                      🛡️`,
-            `🛡️      💟 🩶 💗                        🗡️`,
+            `🛡️                                      🗡️`,
             `🗡️                                      🛡️`,
             "🐰=============== 💓🐰💓 ===============🐰",
         ];
@@ -1052,9 +1145,9 @@ class AllPetMaps {
             `🗡️                                      🛡️`,
             `🛡️                                      🗡️`,
             `🗡️                                      🛡️`,
-            `🛡️       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷       🗡️`,
+            `       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷           `,
             `🗡️                                      🛡️`,
-            `🛡️      💟 🩶 💗                        🗡️`,
+            `🛡️                                      🗡️`,
             `🗡️                                      🛡️`,
             "🦅=============== 💓🦅💓 ===============🦅",
         ];
@@ -1078,15 +1171,15 @@ class AllPetMaps {
             `🗡️                                        🛡️`,
             `🛡️                                        🗡️`,
             `🗡️                                        🛡️`,
-            `🛡️       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷         🗡️`,
+            `       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷             `,
             `🗡️                                        🛡️`,
-            `🛡️      💟 🩶 💗                          🗡️`,
+            `🛡️                                         🗡️`,
             `🗡️                                        🛡️`,
             "🦇================ 💓🦇💓 ================🦇",
         ];
         this.mapWolfFight = [
             "🐺================ 💓🐺💓 ===============🐺",
-            `🛡️                           __          🗡️`,
+            `🛡️                            __          🗡️`,
             `🗡️                          .d$$b        🛡️`,
             `🛡️                        .' TO$;\\       🗡️`,
             `🗡️                       /  : TP._;      🛡️`,
@@ -1104,14 +1197,15 @@ class AllPetMaps {
             `🗡️     ""^^T$$$P^)            .(:        🛡️`,
             `🛡️                                       🗡️`,
             `🗡️                                       🛡️`,
-            `🛡️       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷        🗡️`,
+            `       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷            `,
             `🗡️                                       🛡️`,
-            `🛡️      💟 🩶 💗                         🗡️`,
+            `🛡️                                       🗡️`,
             `🗡️                                       🛡️`,
             "🐺================ 💓🐺💓 ===============🐺",
         ];
     }
-
+    // ${enemyRandom.name}
+    // attack: ${enemyRandom.attack}
     updateHP(myPetCareMode, enemyRandom) {
         const maxPetHeart = 3 * Math.ceil(maxPetHP / 10); // 最大HP值，也就是最多的红心数量🩷
         const maxEnemyHeart = 3 * Math.ceil(maxEnemyHP / 10);
@@ -1136,15 +1230,15 @@ class AllPetMaps {
         petFight.splice(
             19,
             1,
-            `🛡️        HP ${petHPString.padEnd(maxPetHeart, "🩶 ")}           🗡️`
+            `        HP ${petHPString.padEnd(maxPetHeart, "🩶 ")}           `
         );
         enemyFight.splice(
             19,
             1,
-            `🛡️        HP ${enemyHPString.padEnd(
+            `        HP ${enemyHPString.padEnd(
                 maxEnemyHeart,
                 "🩶 "
-            )}             🗡️`
+            )}             `
         );
 
         // 输出更新后的地图
@@ -1169,10 +1263,26 @@ class AllPetMaps {
     printPetMap() {
         console.clear();
         let mapPet = [];
+        let maxHP = 0;
+        let maxIQ = 0;
+        let maxAffinity = 0;
         // myPetCareMode.name = petName;
-        if (whichPet === "Tiger") mapPet = this.mapTiger;
-        else if (whichPet === "Affe") mapPet = this.mapManky;
-        else if (whichPet === "Hase") mapPet = this.mapRabbit;
+        if (whichPet === "Tiger") {
+            maxHP = 160;
+            maxIQ = 10;
+            maxAffinity = 10;
+            mapPet = this.mapTiger;
+        } else if (whichPet === "Affe") {
+            maxHP = 120;
+            maxIQ = 16;
+            maxAffinity = 12;
+            mapPet = this.mapManky;
+        } else if (whichPet === "Hase") {
+            maxHP = 100;
+            maxIQ = 12;
+            maxAffinity = 16;
+            mapPet = this.mapRabbit;
+        }
         // console.log(myPetCareMode);
         // console.log(petName);
         // readlineSync.keyInPause("wait...");
@@ -1192,28 +1302,28 @@ class AllPetMaps {
             } else if (rowPet.includes("full:")) {
                 const updatedRow = rowPet.replace(
                     /full: \d+/,
-                    `full: ${myPetCareMode.full}`
+                    `full: ${myPetCareMode.full} (max: 10)`
                 );
                 // console.log(myPetCareMode.full);
                 console.log(updatedRow);
             } else if (rowPet.includes("IQ:")) {
                 const updatedRow = rowPet.replace(
                     /IQ: \d+/,
-                    `IQ: ${myPetCareMode.IQ}`
+                    `IQ: ${myPetCareMode.IQ} (max: ${maxIQ})`
                 );
                 // console.log(myPetCareMode.full);
                 console.log(updatedRow);
             } else if (rowPet.includes("affinity:")) {
                 const updatedRow = rowPet.replace(
                     /affinity: \d+/,
-                    `affinity: ${myPetCareMode.affinity}`
+                    `affinity: ${myPetCareMode.affinity} (max: ${maxAffinity})`
                 );
                 // console.log(myPetCareMode.full);
                 console.log(updatedRow);
             } else if (rowPet.includes("HP:")) {
                 const updatedRow = rowPet.replace(
                     /HP: \d+/,
-                    `HP: ${myPetCareMode.HP}`
+                    `HP: ${myPetCareMode.HP} (max: ${maxHP})`
                 );
                 // console.log(myPetCareMode.full);
                 console.log(updatedRow);
