@@ -811,52 +811,7 @@ class Pet {
             gameInMainMap.start();
         }
     }
-    // fightOrGoHome(enemy) {
-    //     if (this.HP > 50) {
-    //         if (this.IQ > 15) {
-    //             isFight = readlineSync.keyIn(
-    //                 `Die HP des Feindes sind ${enemy.HP}, die Angriffskraft ist ${enemy.attack}; Deine HP sind ${this.HP}, deine Angriffskraft ist ${this.attack}. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
-    //                 { limit: "khe" }
-    //             );
-    //         } else {
-    //             if (enemy.HP > this.HP && enemy.attack > this.attack) {
-    //                 isFight = readlineSync.keyIn(
-    //                     `Gefahr, du könntest wahrscheinlich umkommen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
-    //                     { limit: "khe" }
-    //                 );
-    //             } else {
-    //                 isFight = readlineSync.keyIn(
-    //                     `Du hast möglicherweise die Möglichkeit, deinen Feind zu besiegen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
-    //                     { limit: "khe" }
-    //                 );
-    //             }
-    //         }
-    //     } else if (this.HP === 0) {
-    //         this.isFighting = false;
-    //         goPetMap = true;
-    //         readlineSync.keyInPause(
-    //             `your HP is ${this.HP} now, you must be go home to heal. press any key to continue`
-    //         );
-    //         myPetCareMode.startPetCareMode();
-    //     } else {
-    //         isFight = readlineSync.keyIn(
-    //             `Deine Lebenspunkte sind zu niedrig. Es besteht die Möglichkeit, dass du im Kampf sterben wirst. Es wird empfohlen, zunächst nach Hause zu gehen und dich zu heilen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
-    //             { limit: "khe" }
-    //         );
-    //     }
-    //     if (isFight === "k") {
-    //         this.fight(enemiesList[randomEnemy]);
-    //     }
-    //     if (isFight === "h") {
-    //         goPetMap = true;
-    //         // console.log(goPetMap);
-    //         // readlineSync.keyInPause("press any key to continue");
-    //         myPetCareMode.startPetCareMode();
-    //     }
-    //     if (isFight === "e") {
-    //         gameInMainMap.start();
-    //     }
-    // }
+
     fight(enemy) {
         while (true) {
             enemy.HP = enemy.HP - (this.attack + this.weapons.weaponAttack);
