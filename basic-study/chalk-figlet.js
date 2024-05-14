@@ -57,3 +57,11 @@ figlet(greetWord1, { font: "Standard" }, function (err, data1) {
         // }, 3000); // 停止动画的时间（毫秒）
     });
 });
+
+import { createSpinner } from "nanospinner";
+
+const spinner = createSpinner("Run test").start();
+
+setTimeout(() => {
+    spinner.success();
+}, 1000);

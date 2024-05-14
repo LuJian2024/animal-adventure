@@ -357,7 +357,7 @@ const gameInMainMap = new MainMap();
 //------- 宠物养成系统 ------------
 let applePie = 0;
 const foodList = { apple: 10, flour: 10, sugar: 10 };
-class PetCare {
+class Pet {
     constructor(name, type = "", hunger, affinity = 5, IQ = 10, HP = 10) {
         this.name = name;
         this.type = type;
@@ -490,7 +490,7 @@ class PetCare {
     }
 
     addHP(value) {
-        this.HQ = Math.min(this.HQ + value, 10);
+        this.HP = Math.min(this.HP + value, 10);
     }
     foodStock() {}
     feed() {
@@ -618,19 +618,25 @@ class PetCare {
                 if (round <= 3) {
                     this.addIQ(5);
                     console.log(
-                        `🎆 Wow,${petName}, du bist wirklich großartig! Du hast es nur in ${round} Versuchen geschafft 🥇❗❗❗ 🎆`
+                        `🎆 Wow,${chalk.blue(
+                            petName
+                        )}, du bist wirklich großartig! Du hast es nur in ${round} Versuchen geschafft 🥇❗❗❗ 🎆`
                     );
                 }
                 if (round > 3 && round < 7) {
                     this.addIQ(3);
                     console.log(
-                        `${petName}, Du bist sehr gut, du hast es nur in ${round} Versuchen geschafft. Beim nächsten Mal wird es noch besser sein 🥈❗ `
+                        `${chalk.blue(
+                            petName
+                        )}, Du bist sehr gut, du hast es nur in ${round} Versuchen geschafft. Beim nächsten Mal wird es noch besser sein 🥈❗ `
                     );
                 }
                 if (round >= 7) {
                     this.addIQ(2);
                     console.log(
-                        `Herzlichen Glückwunsch, ${petName}, du hast es im ${round}ten Versuch geschafft. `
+                        `Herzlichen Glückwunsch,${chalk.blue(
+                            petName
+                        )}, du hast es im ${round}ten Versuch geschafft. `
                     );
                 }
                 // round = 1;
@@ -652,14 +658,16 @@ class PetCare {
             } else {
                 if (round >= 7 && round < 10)
                     console.log(
-                        `Viel Glück, ${petName}, du hast noch ⏲️ ${
+                        `Viel Glück,${chalk.blue(petName)}, du hast noch ⏲️ ${
                             10 - round
                         } Versuche.`
                     );
                 if (round === 10) {
                     this.reduceIQ(1);
                     console.log(
-                        ` 😅 , ${petName}, Spiel vorbei, du hast verloren. Ich wünsche Ihnen einen schönen Tag. Willkommen zur nächsten Herausforderung.`
+                        ` 😅 ,${chalk.blue(
+                            petName
+                        )}, Spiel vorbei, du hast verloren. Ich wünsche Ihnen einen schönen Tag. Willkommen zur nächsten Herausforderung.`
                     );
                     // round = 1;
                     // this.playAgain(randomNumArr);
@@ -753,4 +761,4 @@ class PetCare {
         }
     }
 }
-const myPetCareMode = new PetCare(petName, whichPet, 10);
+const myPetCareMode = new Pet(petName, whichPet, 10);

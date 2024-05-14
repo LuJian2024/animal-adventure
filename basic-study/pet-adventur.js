@@ -1,29 +1,116 @@
-class Adventure extends PetCare {
-    constructor(HP, attack, weapons, ...args) {
+const WeaponsList = [
+    { weaponName: "Stab des Feuers", weaponAttack: 15 },
+    { weaponName: "Donnerstab", weaponAttack: 15 },
+    { weaponName: "Engelstab", weaponAttack: 15 },
+    { weaponName: "Dunkelheitsstab", weaponAttack: 15 },
+    { weaponName: "Drachenstab", weaponAttack: 15 },
+    { weaponName: "Weisenstab", weaponAttack: 15 },
+];
+let isFight;
+
+class PetAdventure extends Pet {
+    constructor(attack, weaponName = "", weaponAttack = 0, ...args) {
         super(...args);
 
         this.attack = attack;
 
-        // this.weapons = {
-        //     weaponName: weaponName,
-        //     weaponAttack: weaponAttack,
-        // };
+        this.weapons = {
+            weaponName: weaponName,
+            weaponAttack: weaponAttack,
+        };
     }
-    reduceHQ(value) {
-        this.HQ = Math.max(this.HQ - value, 0);
+    reduceHP(value) {
+        this.HP = Math.max(this.HP - value, 0);
     }
     fight(enemy) {
-        enemy.life = enemy.life - (this.attack + this.weapons.weaponAttack);
-        debugger;
-        enemy.life <= 0 ? (enemy.life = 0) : enemy.life;
-        console.log(
-            `${this.playerName} fight ${enemy.playerName}(${enemy.life})`
-        );
+        while (true) {
+            enemy.HP = enemy.HP - (this.attack + this.weapons.weaponAttack);
+            enemy.HP <= 0 ? (enemy.HP = 0) : enemy.HP;
+            this.HP = this.HP - enemy.attack;
+            this.HP <= 0 ? (this.HP = 0) : this.HP;
+            // console.log(
+            //     `${this.playerName} fight ${enemy.playerName}(${enemy.HP})`
+            // );
+            if (enemy.HP <= 0) this.getWeapons();
+            if (this.HP <= 0) myPetCareMode.startPetCareMode();
+        }
     }
-    pick() {}
+    fightOrGoHome() {
+        if (this.HP > 50) {
+            if (this.IQ > 15) {
+                isFight = readlineSync.keyIn(
+                    `Die HP des Feindes sind l, die Angriffskraft ist n; Deine HP sind m, deine Angriffskraft ist k. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                    { limit: "khe" }
+                );
+            } else {
+                if (enemy.HP > this.HP && enemy.attack > this.attack) {
+                    isFight = readlineSync.keyIn(
+                        `Gefahr, du könntest wahrscheinlich umkommen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                        { limit: "khe" }
+                    );
+                } else {
+                    isFight = readlineSync.keyIn(
+                        `Du hast möglicherweise die Möglichkeit, deinen Feind zu besiegen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                        { limit: "khe" }
+                    );
+                }
+            }
+        } else {
+            isFight = readlineSync.keyIn(
+                `Deine Lebenspunkte sind zu niedrig. Es besteht die Möglichkeit, dass du im Kampf sterben wirst. Es wird empfohlen, zunächst nach Hause zu gehen und dich zu heilen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                { limit: "khe" }
+            );
+        }
+        if (isFight === "k") {
+            this.fight();
+        }
+        if (isFight === "h") {
+            myPetCareMode.startPetCareMode();
+        }
+        if (isFight === "e") {
+            gameInMainMap.start();
+        }
+    }
+    getWeapons() {
+        // const WeaponsList = [
+        //     { weaponName: "Stab des Feuers", weaponAttack: 15 },
+        //     { weaponName: "Donnerstab", weaponAttack: 15 },
+        //     { weaponName: "Engelstab", weaponAttack: 15 },
+        //     { weaponName: "Dunkelheitsstab", weaponAttack: 15 },
+        //     { weaponName: "Drachenstab", weaponAttack: 15 },
+        //     { weaponName: "Weisenstab", weaponAttack: 15 },
+        // ];
+
+        const randomWeaponIndex = Math.floor(
+            Math.random() * WeaponsList.length
+        );
+
+        const equipWeapon = readlineSync.question(
+            `Du hast ${WeaponsList[randomWeaponIndex].weaponName} erhalten, Angriffskraft ist ${WeaponsList[randomWeaponIndex].weaponAttack}; Dein aktuelles ist ${this.weapons.weaponName}, Angriffskraft ist ${this.weapons.weaponAttack}. Möchtest du es ersetzen? (y/n)`
+        );
+        if (equipWeapon === "y") {
+            this.weapons.weaponName = WeaponsList[randomWeaponIndex].weaponName;
+            this.weapons.weaponAttack =
+                WeaponsList[randomWeaponIndex].weaponAttack;
+        }
+    }
 }
 
-const petAdventureMode = new Adventure();
+const petAdventureMode = new PetAdventure(10, "", 0, petName, whichPet);
+
+class Enemies {
+    constructor(name, type, HP, attack) {
+        this.name = name;
+        this.type = type;
+        this.HP = HP;
+        this.attack = attack;
+    }
+}
+
+const goldEagle = new Enemies("Adlersturz", "Eagle", 100, 20);
+const zuBat = new Enemies("Nachtjäger", "Bat", 100, 20);
+const wolfsRuf = new Enemies("Einsamer Wolf", "Wolf", 100, 20);
+
 //------------------- Fight Game ----------------------------
 function fight(enemy) {
     enemy.life = enemy.life - (this.attack + this.weapons.weaponAttack);
@@ -125,14 +212,14 @@ while (lifeFlag) {
     // }
     // playerGroup[1].fight(playerGroup[0]);
 
-    roundFlag++;
-    if (roundFlag === 5) {
-        console.log("Every 5th round player can heal himself");
-        playerGroup.forEach((element) => element.healed(element));
-        // doomGuy.healed(doomGuy);
-        // cyberDemon.healed(cyberDemon);
-        roundFlag = 0;
-    }
+    // roundFlag++;
+    // if (roundFlag === 5) {
+    //     console.log("Every 5th round player can heal himself");
+    //     playerGroup.forEach((element) => element.healed(element));
+    //     // doomGuy.healed(doomGuy);
+    //     // cyberDemon.healed(cyberDemon);
+    //     roundFlag = 0;
+    // }
 }
 
 //----------------------------------------------

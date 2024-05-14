@@ -102,7 +102,9 @@ figlet(greetWord1, { font: "Standard" }, function (err, data1) {
         const petName = readlineSync.question("Wie heißt dein Haustier? ");
         console.log(petName);
         console.log(
-            `Bist du bereit? ${petName}, Wir beginnen ein neues Abenteuer!`
+            `Bist du bereit? ${chalk.blue(
+                petName
+            )}, Wir beginnen ein neues Abenteuer!`
         );
         // setTimeout(() => {
         //     // rainbowText.stop();

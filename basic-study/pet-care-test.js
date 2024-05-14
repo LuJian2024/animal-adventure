@@ -2,7 +2,7 @@ import readlineSync from "readline-sync";
 //------- 宠物养成系统 ------------
 let applePie = 0;
 const foodList = { apple: 10, flour: 10, sugar: 10 };
-class PetCare {
+class Pet {
     constructor(
         name,
         type = "",
@@ -134,15 +134,21 @@ class PetCare {
             if (result.every((e) => e === "🐃")) {
                 if (round <= 3)
                     console.log(
-                        `🎆 Wow,${petName}, du bist wirklich großartig! Du hast es nur in ${round} Versuchen geschafft 🥇❗❗❗ 🎆`
+                        `🎆 Wow,${chalk.blue(
+                            petName
+                        )}, du bist wirklich großartig! Du hast es nur in ${round} Versuchen geschafft 🥇❗❗❗ 🎆`
                     );
                 if (round > 3 && round < 7)
                     console.log(
-                        `${petName}, Du bist sehr gut, du hast es nur in ${round} Versuchen geschafft. Beim nächsten Mal wird es noch besser sein 🥈❗ `
+                        `${chalk.blue(
+                            petName
+                        )}, Du bist sehr gut, du hast es nur in ${round} Versuchen geschafft. Beim nächsten Mal wird es noch besser sein 🥈❗ `
                     );
                 if (round >= 7)
                     console.log(
-                        `Herzlichen Glückwunsch, ${petName}, du hast es im ${round}ten Versuch geschafft. `
+                        `Herzlichen Glückwunsch,${chalk.blue(
+                            petName
+                        )}, du hast es im ${round}ten Versuch geschafft. `
                     );
                 break;
             }
@@ -151,13 +157,15 @@ class PetCare {
             ); // 🔥 🎆 🥇 🥈 🥉
             if (round >= 7 && round < 10)
                 console.log(
-                    `Viel Glück, ${petName}, du hast noch ⏲️ ${
+                    `Viel Glück,${chalk.blue(petName)}, du hast noch ⏲️ ${
                         10 - round
                     } Versuche.`
                 );
             if (round === 10)
                 console.log(
-                    ` 😅 , ${petName}, Spiel vorbei, du hast verloren. Ich wünsche Ihnen einen schönen Tag. Willkommen zur nächsten Herausforderung.`
+                    ` 😅 ,${chalk.blue(
+                        petName
+                    )}, Spiel vorbei, du hast verloren. Ich wünsche Ihnen einen schönen Tag. Willkommen zur nächsten Herausforderung.`
                 );
 
             round++;
@@ -198,7 +206,7 @@ class PetCare {
         }
     }
 }
-const myPetCareMode = new PetCare("bob");
+const myPetCareMode = new Pet("bob");
 myPetCareMode.startPetCareMode();
 // class Food {
 //     constructor(name, energy, sweet) {

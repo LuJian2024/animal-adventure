@@ -1,149 +1,45 @@
 import readlineSync from "readline-sync";
-import figlet from "figlet";
-import gradient from "gradient-string";
 
-import chalk from "chalk";
-import chalkAnimation from "chalk-animation";
+import { petType } from "../util/initVars.js";
+import { petObj } from "../util/functions.js";
+import { restart } from "../util/initVars.js"; //重新进入主地图的判断
+// import { whichPet } from "../util/initVars.js";
+import myPetCareMode from "../components/Pet.js";
+import petAdventureMode from "../components/PetAdventure.js";
 
-import { setTimeout as waitingTime } from "timers/promises";
-console.clear();
-
-const greetWord1 = "Willkommen zu deinem Abenteuer \n";
-const greetWord2 =
-    "                       in der Welt       \n                  der Haustierpflege       \n               und Abenteuer";
-
-// 问题选项
-const petType = [
-    "Tiger 🐯 (seine Angriffskraft ist höher)",
-    "Affe 🐒 (seine Intelligenz ist höher)",
-    "Hase 🐰 (seine Zuneigung ist höher)",
-];
-let petName = "";
-// 初始选择索引
-let selectedIndex = 0;
-//重新进入主地图的判断
-let restart = false;
-let goPetMap = false;
-
-function printWelcomeMessage() {
-    figlet(greetWord1, { font: "Standard" }, function (err, data1) {
-        const rainbowText = chalkAnimation.rainbow(data1);
-
-        setTimeout(() => {
-            rainbowText.stop();
-            figlet(greetWord2, { font: "Small" }, function (err, data2) {
-                const rainbowText1 = chalkAnimation.rainbow(data2);
-
-                setTimeout(() => {
-                    rainbowText1.stop();
-                    console.clear();
-                    printPetSelection();
-                }, 3000);
-            });
-        }, 1000);
-    });
-}
-
-async function printPetSelection() {
-    while (true) {
-        console.log(
-            `Wähle dein Haustier aus: (Use ${chalk.bold.yellow(
-                "u"
-            )}(up ⬆️) and ${chalk.bold.yellow(
-                "d"
-            )}(down ⬇️) to navigate, press ${chalk.bold.blue(
-                "Space"
-            )} to select), press ${chalk.bold.red("q")} to quit the game)`
-        );
-        for (let i = 0; i < petType.length; i++) {
-            if (i === selectedIndex) {
-                console.log("> \x1b[36m" + petType[i] + "\x1b[0m");
-            } else {
-                console.log("  " + petType[i]);
-            }
-        }
-
-        const key = readlineSync.keyIn("", {
-            hideEchoBack: true,
-            mask: "",
-            limit: "udq ",
-        });
-        // 根据按键更新选择索引
-        if (key === "u") {
-            selectedIndex =
-                selectedIndex === 0 ? petType.length - 1 : selectedIndex - 1;
-        } else if (key === "d") {
-            selectedIndex =
-                selectedIndex === petType.length - 1 ? 0 : selectedIndex + 1;
-        } else if (key === "q") {
-            // Ctrl+C 退出程序
-            process.exit();
-        } else if (key === " ") {
-            // space键表示选定
-            break;
-        }
-        console.clear();
-    }
-    // 打印最终选择
-    console.log("You selected:", petType[selectedIndex]);
-    console.log(chalk.bold.greenBright("Kluge Wahl"));
-    petName = readlineSync.question("Wie heißt dein Haustier? ");
-    //console.log(petName);
-    console.log(
-        `Bist du bereit? 🥳 ${chalk.bold.blueBright(
-            petName
-        )}, Wir beginnen ein neues Abenteuer! 🥳`
-    );
-
-    await waitingTime(3000);
-    console.clear();
-    startGame();
-}
-
-function startGame() {
-    // 初始化游戏并开始
-    // const gameInMainMap = new MainMap();
-    gameInMainMap.start();
-    // myPetCareMode.startPetCareMode();
-}
-
-printWelcomeMessage();
-
-let whichPet;
-
+export let whichPet;
+//重新进入宠物战斗系统地图的判断
+export let goPetMap = false;
 let itemsList = { apples: 0, flours: 0, sugar: 0 };
 class MainMap {
     constructor() {
         this.map = [
             "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-            "X                         x                                                                 X",
-            "X                       x  x                                                                X",
-            "X                     x     x                                                               X",
-            "X                   x        x                                                              X",
-            "X                 x           x                                                             X",
-            "X               x              x                                                            X",
-            "X              xxxxxxxxxxxxxxxxxx                                                           X",
-            "X              x                x                                                           X",
-            "X              x                x                                                           X",
-            "X              x                x                                                           X",
-            "X              x                                                                            X",
-            "X              x                                                                            X",
-            "X              x                                                                            X",
-            "X              xxxxxxxxxxxxxxxxxx                                                           X",
-            "X                                                                                           X",
-            "X                                                                                           X",
-            "X                                                                                           X",
-            "X                                                                                           X",
+            "X                                                              🎄                           X",
+            "X                       🌻                                    🎄  🎄                        X",
+            "X                     🌻  🌻                                 🎄   🎄🎄🎄                    X",
+            "X                   🌻      🌻                       🎄🎄🎄🎄🎄          🎄🎄🎄              X",
+            "X                 🌻          🌻                     🎄                        🎄             X",
+            "X               🌻             🌻                🎄 🎄                         🎄             X",
+            "X              🌻🌻🌻🌻🌻🌻🌻🌻🌻                 🎄                        🎄               X",
+            "X             🌻                🌻               🎄                       🎄                  X",
+            "X             🌻                🌻              🎄                     🎄                     X",
+            "X             🌻                🌻                                   🎄                       X",
+            "X             🌻                                                      🎄                     X",
+            "X             🌻                                 🎄🎄🎄                 🎄🎄                  X",
+            "X             🌻                                      🎄                   🎄                X",
+            "X             🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻                 🎄                      🎄               X",
+            "X                                                 🎄                      🎄                 X",
+            "X                                                🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄                  X",
+            "X                                                                                            X",
+            "X                                                                                            X",
             "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         ];
-
         this.playerPosition = { x: 1, y: 1 };
         this.isRunning = true;
-        // this.applePositions = [
-        //     { x: 20, y: 10 },
-        //     { x: 30, y: 11 },
-        //     { x: 40, y: 12 },
-        // ];
+        this.isAtHome = false;
+        this.isAdventureMap = false;
+
         this.applePositions = []; //随机生成苹果的位置
         this.enemyPosition = []; //随机产生怪兽的位置，暂时只产生3个
 
@@ -169,11 +65,9 @@ class MainMap {
             //前面的那些给苹果
             else this.enemyPosition.push({ x: randomX, y: randomY }); //最后的3个给怪兽
         }
-        this.getApples(itemsList);
-        this.enemyPosition();
     }
 
-    getApples(itemsList) {
+    getApplesAndEnemies(itemsList) {
         const randomApples = Math.floor(Math.random() * 5) + 1;
         const randomFlours = Math.floor(Math.random() * 3) + 1;
         const randomSugar = Math.floor(Math.random() * 3) + 1;
@@ -199,20 +93,20 @@ class MainMap {
                     `Du hast jetzt ${itemsList.apples} Äpfel, ${itemsList.flours} Mehl und ${itemsList.sugar} Zucker.`
                 );
             } else return;
-        }
-        if (
+        } else if (
             this.enemyPosition.some(
                 (item) =>
                     item.x === this.playerPosition.x &&
                     item.y === this.playerPosition.y
             )
         ) {
-            const takeFight = readlineSync.question(
+            const fightEnemy = readlineSync.question(
                 `Vorsicht, du hast ein Monster getroffen. Möchtest du gegen es kämpfen? (y/n)`
             );
 
-            if (takeFight === "y") {
+            if (fightEnemy === "y") {
                 //进入战斗画面
+                goToFight = true;
                 petAdventureMode.petFightStart();
             } else return;
         }
@@ -223,7 +117,7 @@ class MainMap {
     //打印主地图
     printMap() {
         console.clear();
-        whichPet = petType[selectedIndex].split(" ")[0]; //??? 为何定义全局时，取不到值
+        whichPet = petType[petObj.selectedIndex].split(" ")[0]; //??? 为何定义全局时，取不到值
         for (let row of this.map) {
             // 将玩家标记 'M' 替换为 ASCII 艺术, 不同的宠物对应不同的图标
             if (whichPet === "Tiger") row = row.replace("M", "🐯");
@@ -235,6 +129,7 @@ class MainMap {
         // 打印玩家当前位置坐标
         console.log("player's Position:", this.playerPosition);
         console.log("truesure's Position ", this.applePositions);
+        console.log("enemy's Position ", this.enemyPosition);
     }
 
     movePlayer(direction) {
@@ -285,8 +180,8 @@ class MainMap {
     start() {
         // let flag = true;
         let move;
-        this.generateApples(3);
         if (restart === true) this.isRunning = true;
+        this.generateApples(3);
         while (this.isRunning) {
             console.log(this.isRunning);
             if (!this.isRunning) break;
@@ -302,10 +197,33 @@ class MainMap {
                 this.isAtHome = true;
                 console.log("Zuhause 🏠, schönes Zuhause 🏡 !");
                 move = readlineSync.keyIn(
-                    "Use W/A/S/D to move (or H to hoursMap or Q to quit ): ",
+                    "Use W/A/S/D to move (or H to houseMap or Q to quit ): ",
+                    // "Use W/A/S/D to move ( or Q to quit ): ",
                     { limit: "wasdqh" }
                 );
+            } else if (
+                // in Adventure map
+                this.playerPosition.x >= 50 &&
+                this.playerPosition.x <= 76 &&
+                this.playerPosition.y >= 5 &&
+                this.playerPosition.y <= 15
+            ) {
+                this.isAdventureMap = true;
+                console.log(
+                    "Beachte, du bist jetzt auf der Abenteuerkarte. Hier kannst du Glück haben und Schätze 🍎 finden, aber natürlich auch Gefahren 🗡️ begegnen.!"
+                );
+
+                //添加随机遇到苹果和怪兽
+                this.getApplesAndEnemies(itemsList);
+
+                // 下面的这行代码必须要在，不然会出现代码乱跳的琴况
+                move = readlineSync.keyIn(
+                    "Use W/A/S/D to move ( or Q to quit ): ",
+                    { limit: "wasdq" }
+                );
             } else {
+                this.isAtHome = false;
+                this.isAdventureMap = false;
                 move = readlineSync.keyIn(
                     "Use W/A/S/D to move (or Q to quit): ",
                     { limit: "wasdq" }
@@ -324,17 +242,6 @@ class MainMap {
                 }
             }
 
-            // if (
-            //     this.applePositions.some(
-            //         (item) =>
-            //             item.x === this.playerPosition.x &&
-            //             item.y === this.playerPosition.y
-            //     )
-            // ) {
-            //     this.getApples(itemsList);
-            //     console.log(itemsList);
-            // }
-
             if (move.toLowerCase() === "q") {
                 this.isRunning = false;
                 console.log("Game over. Thanks for playing!");
@@ -346,5 +253,4 @@ class MainMap {
     }
 }
 const gameInMainMap = new MainMap();
-
-//删除了part2-....-care0705 的宠物养成系统 到最后
+export default gameInMainMap;
