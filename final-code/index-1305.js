@@ -383,7 +383,7 @@ let isFight;
 let randomEnemy;
 let enemyType = "";
 let enemyRandom;
-
+let canCook;
 class Pet {
     constructor(
         name = petName,
@@ -474,7 +474,7 @@ class Pet {
                     itemsList.apples--;
                     // console.log("Full", this.full);
                     // console.log("affinity", this.affinity);
-                    petMaps.printPetMap();
+                    // petMaps.printPetMap();
                     // this.printPetMap();
                 }
                 if (foods === "2") {
@@ -482,22 +482,49 @@ class Pet {
                     this.addAffinity(5);
                     applePie--;
                 }
+            } else if (applePie && !itemsList.apples) {
+                this.addFull(5);
+                this.addAffinity(5);
+                applePie--;
+                readlineSync.keyInPause(
+                    `Wir haben keine Äpfel, aber wir haben Apfelkuchen. Du kannst den Apfelkuchen essen.`
+                );
+                readlineSync.keyInPause(`Du hast einen Apfelkuchen gegessen.`);
             } else if (!applePie && itemsList.apples) {
                 const makeFood = readlineSync.question(
                     `Wir haben keine Apfelkuchen mehr, aber wir haben noch Äpfel. Möchtest du einen Apfelkuchen backen oder lieber Äpfel essen? (y für Apfelkuchen backen/n für Äpfel essen): `
                 );
                 if (makeFood === "y") {
-                    this.cook(itemsList);
+                    do {
+                        this.cook(itemsList);
+                        if (canCook) {
+                            const cookApplepie = readlineSync.keyIn(
+                                `Apfelkuchen + 1, Wir haben jetzt ${applePie} Apfelkuchen. Möchtest du weitermachen? (y/n)`,
+                                { limit: "yn" }
+                            );
+                            if (cookApplepie === "n") break;
+                        } else {
+                            readlineSync.keyInPause(
+                                "Wir haben nicht genug Rohstoffe, können Apfelkuchen nicht backen."
+                            );
+                            // console.log(
+                            //     "Wir haben nicht genug Rohstoffe, können Apfelkuchen nicht backen"
+                            // );
+                            break;
+                        }
+                    } while (canCook);
                 }
                 if (makeFood === "n") {
                     this.addFull(2);
                     this.addAffinity(3);
                     itemsList.apples--;
+                    console.log("you eat one apple.");
                 }
             } else if (!applePie && !itemsList.apples)
                 readlineSync.keyInPause(
                     `Wir haben nicht genügend Äpfel und Apfelkuchen. Du musst rausgehen und sie pflücken.`
                 );
+            return;
         }
     }
 
@@ -511,14 +538,20 @@ class Pet {
             itemsList.apples -= 2;
             itemsList.flours--;
             itemsList.sugar--;
-            console.log(
-                `Apfelkuchen + 1, Wir haben jetzt ${applePie} Apfelkuchen.`
-            );
+
+            canCook = true;
+
+            // console.log(
+            //     `Apfelkuchen + 1, Wir haben jetzt ${applePie} Apfelkuchen.`
+            // );
         } else {
+            canCook = false;
             console.log(
                 `Wir haben nicht genug Rohstoffe, du musst rausgehen und sie pflücken.`
             );
+            return;
         }
+        return canCook;
     }
     // play() {
     //     if (this.full > 8) return `${this.name} ist zu hungrig zum spielen`;
