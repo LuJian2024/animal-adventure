@@ -218,7 +218,7 @@ class MainMap {
             if (fightEnemy === "y") {
                 //进入战斗画面
                 goToFight = true;
-                this.playerPosition.splice(enemyPositionIndex, 1);
+                this.enemyPosition.splice(enemyPositionIndex, 1);
                 myPetCareMode.petFightStart();
             } else return;
         }
