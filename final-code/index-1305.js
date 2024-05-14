@@ -144,8 +144,6 @@ class MainMap {
 
         this.applePositions = []; //随机生成苹果的位置
         this.enemyPosition = []; //随机产生怪兽的位置，暂时只产生3个
-
-        // this.generateApples(myPetCareMode.affinity); // 生成3个苹果
     }
 
     generateApples(numApples) {
@@ -384,7 +382,6 @@ let isFight;
 let randomEnemy;
 let enemyType = "";
 let enemyRandom;
-// let enemyName = "";
 let canCook;
 class Pet {
     constructor(
@@ -477,10 +474,6 @@ class Pet {
                     readlineSync.keyInPause(
                         `Du hast einen Apfel gegessen.dein Full-Eigenschaft erhöhte sich um 2, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 3.`
                     );
-                    // console.log("Full", this.full);
-                    // console.log("affinity", this.affinity);
-                    // petMaps.printPetMap();
-                    // this.printPetMap();
                 }
                 if (foods === "2") {
                     this.addFull(5);
@@ -517,9 +510,6 @@ class Pet {
                             readlineSync.keyInPause(
                                 "Wir haben nicht genug Rohstoffe Apfelkuchen zu backen."
                             );
-                            // console.log(
-                            //     "Wir haben nicht genug Rohstoffe, können Apfelkuchen nicht backen"
-                            // );
                             break;
                         }
                     } while (canCook);
@@ -705,9 +695,7 @@ class Pet {
         if (goPetMap === true) this.isPlaying = true;
         while (this.isPlaying) {
             petMaps.printPetMap();
-            // console.log(myPetCareMode);
-            // console.log(whichPet);
-            // console.log(petName);
+
             petCareModes = readlineSync.keyIn(
                 "Use 1/2/3/4 to choose (or b to mainMap or Q to quit ): ",
                 { limit: "1234bq" }
@@ -788,17 +776,7 @@ class Pet {
                     myPetCareMode.attack + myPetCareMode.weapons.weaponAttack
                 }.`
             );
-            // readlineSync.keyInPause(
-            //     `Deine Basisangriffskraft beträgt ${
-            //         myPetCareMode.attack
-            //     }, du benutzt die Waffe ${
-            //         myPetCareMode.weapons.weaponName
-            //     }, welche eine Angriffskraft von ${
-            //         myPetCareMode.weapons.weaponAttack
-            //     } hat. Also beträgt deine Gesamtangriffskraft ${
-            //         myPetCareMode.attack + myPetCareMode.weapons.weaponAttack
-            //     }.`
-            // );
+
             this.fight(enemiesList[randomEnemy]);
         }
         if (isFight === "h") {
@@ -882,10 +860,6 @@ class Pet {
     //进入宠物战斗系统
     petFightStart() {
         console.clear();
-        // console.log(myPetCareMode);
-        // console.log(petName);
-        // console.log(whichPet);
-        // readlineSync.keyInPause("wait......");
         maxPetHP = myPetCareMode.HP;
 
         if (goToFight === true) this.isFighting = true;
@@ -894,7 +868,6 @@ class Pet {
             enemyType = enemiesList[randomEnemy].type;
             enemyRandom = enemiesList[randomEnemy];
             maxEnemyHP = enemiesList[randomEnemy].HP;
-            // enemyName = enemiesList[randomEnemy].name;
             petMaps.printPetFightMap();
             // console.log(enemiesList[randomEnemy]);
             this.fightOrGoHome(enemiesList[randomEnemy]);
@@ -902,10 +875,6 @@ class Pet {
     }
 }
 const myPetCareMode = new Pet();
-// console.log(myPetCareMode);
-// console.log(petName);
-// console.log(whichPet);
-//readlineSync.keyInPause("wait......");
 
 //怪兽战斗模式初始化
 class Enemies {
@@ -1159,8 +1128,7 @@ class AllPetMaps {
             "🐺================ 💓🐺💓 ===============🐺",
         ];
     }
-    // ${enemyRandom.name}
-    // attack: ${enemyRandom.attack}
+
     updateHP(myPetCareMode, enemyRandom) {
         const maxPetHeart = 3 * Math.ceil(maxPetHP / 10); // 最大HP值，也就是最多的红心数量🩷
         const maxEnemyHeart = 3 * Math.ceil(maxEnemyHP / 10);
@@ -1238,10 +1206,7 @@ class AllPetMaps {
             maxAffinity = 16;
             mapPet = this.mapRabbit;
         }
-        // console.log(myPetCareMode);
-        // console.log(petName);
-        // readlineSync.keyInPause("wait...");
-        // this.whichPetMap(whichPet);
+
         for (let rowPet of mapPet) {
             // 在每次打印地图之前，更新地图中宠物的各项属性值的部分
             if (rowPet.includes("myName:")) {
@@ -1286,7 +1251,6 @@ class AllPetMaps {
                 console.log(rowPet);
             }
         }
-        // console.log(myPetCareMode.name);
     }
 
     printPetFightMap() {
