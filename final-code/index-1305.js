@@ -7,7 +7,7 @@ import chalkAnimation from "chalk-animation";
 
 import { createSpinner } from "nanospinner";
 import { setTimeout as waitingTime } from "timers/promises";
-console.clear();
+// console.clear();
 
 const greetWord1 = "Willkommen zu deinem Abenteuer \n";
 const greetWord2 =
@@ -15,7 +15,7 @@ const greetWord2 =
 
 // 问题选项
 const petType = [
-    "Tiger 🐯 (seine Angriffskraft ist höher)",
+    "Tiger 🐯 (seine Angriffskraft und Lebenspunkte ist höher)",
     "Affe 🐒 (seine Intelligenz ist höher)",
     "Hase 🐰 (seine Zuneigung ist höher)",
 ];
@@ -95,13 +95,21 @@ async function printPetSelection() {
     console.log("You selected:", petType[selectedIndex]);
     console.log(chalk.bold.greenBright("Kluge Wahl"));
     petName = readlineSync.question("Wie heißt dein Haustier? ");
-    console.log(
+    const spinner = createSpinner(
         `Bist du bereit? 🥳 ${chalk.bold.blueBright(
             petName
-        )}, Wir beginnen ein neues Abenteuer! 🥳`
-    );
+        )} 。。。。。。。。。`
+    ).start();
 
-    await waitingTime(3000);
+    await waitingTime(2000);
+    spinner.success({
+        text: gradient.instagram.multiline(
+            "Wir beginnen ein neues Abenteuer! 🥳"
+        ),
+        mark: "🥳",
+    });
+    await waitingTime(1500);
+
     console.clear();
     startGame();
 }
@@ -112,29 +120,29 @@ function startGame() {
 }
 printWelcomeMessage();
 
-let itemsList = { apples: 0, flours: 0, sugar: 0 };
+let itemsList = { apples: 0, flours: 0, sugar: 0, applePie: 0 };
 class MainMap {
     constructor() {
         this.map = [
-            "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-            "X                                                              🎄                           X",
-            "X                       🌻                                    🎄  🎄                        X",
-            "X                     🌻  🌻                                 🎄   🎄🎄🎄                    X",
-            "X                   🌻      🌻                       🎄🎄🎄🎄🎄          🎄🎄🎄              X",
+            "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "X                                                              🎄                             X",
+            "X                       🌻                                    🎄  🎄                          X",
+            "X                     🌻  🌻                                 🎄   🎄🎄🎄                      X",
+            "X                   🌻      🌻                       🎄🎄🎄🎄🎄          🎄🎄🎄               X",
             "X                 🌻          🌻                     🎄                        🎄             X",
             "X               🌻             🌻                🎄 🎄                         🎄             X",
-            "X              🌻🌻🌻🌻🌻🌻🌻🌻🌻                 🎄                        🎄               X",
+            "X              🌻🌻🌻🌻🌻🌻🌻🌻🌻                 🎄                        🎄                X",
             "X             🌻                🌻               🎄                       🎄                  X",
             "X             🌻                🌻              🎄                     🎄                     X",
             "X             🌻                🌻                                   🎄                       X",
-            "X             🌻                                                      🎄                     X",
+            "X             🌻                                                      🎄                      X",
             "X             🌻                                 🎄🎄🎄                 🎄🎄                  X",
-            "X             🌻                                      🎄                   🎄                X",
-            "X             🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻                 🎄                      🎄               X",
-            "X                                                 🎄                      🎄                 X",
+            "X             🌻                                      🎄                   🎄                 X",
+            "X             🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻                 🎄                      🎄                X",
+            "X                                                 🎄                      🎄                  X",
             "X                                                🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄                  X",
-            "X                                                                                            X",
-            "X                                                                                            X",
+            "X                                                                                             X",
+            "X                                                                                             X",
             "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         ];
         this.playerPosition = { x: 1, y: 1 };
@@ -181,7 +189,15 @@ class MainMap {
             );
 
             const takeApples = readlineSync.question(
-                `Herzlichen Glückwunsch zu ${randomApples} Äpfeln, ${randomFlours} Mehl und ${randomSugar} Zucker. Möchtest du sie behalten oder wegwerfen? (y/n)`
+                `Herzlichen Glückwunsch zu ${chalk.yellowBright(
+                    randomApples
+                )} Äpfeln, ${chalk.yellowBright(
+                    randomFlours
+                )} Mehl und ${chalk.yellowBright(
+                    randomSugar
+                )} Zucker. Möchtest du sie behalten oder wegwerfen? ${chalk.green(
+                    "(y/n)"
+                )}`
             );
 
             if (takeApples === "y") {
@@ -189,7 +205,11 @@ class MainMap {
                 itemsList.flours += randomFlours;
                 itemsList.sugar += randomSugar;
                 console.log(
-                    `Du hast jetzt ${itemsList.apples} Äpfel, ${itemsList.flours} Mehl und ${itemsList.sugar} Zucker.`
+                    `Du hast jetzt ${chalk.yellowBright(
+                        itemsList.apples
+                    )} Äpfel, ${chalk.yellowBright(
+                        itemsList.flours
+                    )} Mehl und ${chalk.yellowBright(itemsList.sugar)} Zucker.`
                 );
                 //捡完苹果后删除
                 this.applePositions.splice(applePositionIndex, 1);
@@ -210,7 +230,9 @@ class MainMap {
             );
 
             const fightEnemy = readlineSync.question(
-                `Vorsicht, du hast ein Monster getroffen. Möchtest du gegen es kämpfen? (y/n)`
+                `Vorsicht, du hast ein Monster getroffen. Möchtest du gegen es kämpfen? ${chalk.green(
+                    "(y / n)"
+                )}`
             );
 
             if (fightEnemy === "y") {
@@ -307,7 +329,13 @@ class MainMap {
                 this.isAtHome = true;
                 console.log("Zuhause 🏠, schönes Zuhause 🏡 !");
                 move = readlineSync.keyIn(
-                    "Use W/A/S/D to move (or H to houseMap or Q to quit ): ",
+                    `Use ${chalk.green("W")} / ${chalk.green(
+                        "A"
+                    )} / ${chalk.green("S")} / ${chalk.green(
+                        "D"
+                    )} to move (or ${chalk.green(
+                        "h"
+                    )} to houseMap or ${chalk.green("q")} to quit ): `,
                     // "Use W/A/S/D to move ( or Q to quit ): ",
                     { limit: "wasdqh" }
                 );
@@ -328,14 +356,22 @@ class MainMap {
 
                 // 下面的这行代码必须要在，不然会出现代码乱跳的琴况
                 move = readlineSync.keyIn(
-                    "Use W/A/S/D to move ( or Q to quit ): ",
+                    `Use ${chalk.green("W")} / ${chalk.green(
+                        "A"
+                    )} / ${chalk.green("S")} / ${chalk.green(
+                        "D"
+                    )} to move (or ${chalk.green("q")} to quit ): `,
                     { limit: "wasdq" }
                 );
             } else {
                 this.isAtHome = false;
                 this.isAdventureMap = false;
                 move = readlineSync.keyIn(
-                    "Use W/A/S/D to move (or Q to quit): ",
+                    `Use ${chalk.green("W")} / ${chalk.green(
+                        "A"
+                    )} / ${chalk.green("S")} / ${chalk.green(
+                        "D"
+                    )} to move (or ${chalk.green("q")} to quit ): `,
                     { limit: "wasdq" }
                 );
             }
@@ -343,7 +379,9 @@ class MainMap {
             //询问是否进入宠物养成系统
             if (move.toLowerCase() === "h") {
                 const isPetCare = readlineSync.question(
-                    "Do you want to play with your Pet (y/n)? "
+                    `Do you want to play with your Pet ${chalk.green(
+                        "(y / n)"
+                    )}?`
                 );
                 if (isPetCare === "y") {
                     this.isRunning = false;
@@ -368,7 +406,7 @@ class MainMap {
 const gameInMainMap = new MainMap();
 
 //------- 宠物养成系统 和战斗系统------------
-let applePie = 0;
+//let applePie = 0;
 // const itemsList = { apple: 10, flour: 10, sugar: 10 };
 const WeaponsList = [
     { weaponName: "Stab des Feuers", weaponAttack: 15 },
@@ -463,46 +501,68 @@ class Pet {
                 if (getMessage === " ") return;
             }
 
-            if (applePie && itemsList.apples) {
+            if (itemsList.applePie && itemsList.apples) {
                 const foods = readlineSync.question(
-                    `Möchtest du einen Apfel essen oder einen Apfelkuchen? 1. Apfel ; 2. Apfelkuchen `
+                    `Möchtest du einen Apfel essen oder einen Apfelkuchen? ${chalk.green(
+                        "1. Apfel ; 2. Apfelkuchen"
+                    )} `
                 );
                 if (foods === "1") {
                     this.addFull(2);
                     this.addAffinity(3);
                     itemsList.apples--;
                     readlineSync.keyInPause(
-                        `Du hast einen Apfel gegessen.dein Full-Eigenschaft erhöhte sich um 2, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 3.`
+                        `Du hast einen 🍎 Apfel gegessen. Dein Full-Eigenschaft erhöhte sich um ${chalk.yellowBright(
+                            "2"
+                        )}, deine Affinität-Eigenschaft erhöhte sich ebenfalls um ${chalk.yellowBright(
+                            "3"
+                        )}.`
                     );
                 }
                 if (foods === "2") {
                     this.addFull(5);
                     this.addAffinity(5);
-                    applePie--;
+                    itemsList.applePie--;
                     readlineSync.keyInPause(
-                        `Du hast einen Apfelkuchen gegessen.dein Full-Eigenschaft erhöhte sich um 5, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 5.`
+                        `Du hast einen 🥧 Apfelkuchen gegessen.dein Full-Eigenschaft erhöhte sich um ${chalk.yellowBright(
+                            "5"
+                        )}, deine Affinität-Eigenschaft erhöhte sich ebenfalls um ${chalk.yellowBright(
+                            "5"
+                        )}.`
                     );
                 }
-            } else if (applePie && !itemsList.apples) {
+            } else if (itemsList.applePie && !itemsList.apples) {
                 this.addFull(5);
                 this.addAffinity(5);
-                applePie--;
+                itemsList.applePie--;
                 readlineSync.keyInPause(
-                    `Wir haben keine Äpfel, aber wir haben Apfelkuchen. Du kannst den Apfelkuchen essen.`
+                    `Wir haben keine 🍎 Äpfel, aber wir haben 🥧 Apfelkuchen. Du kannst den 🥧 Apfelkuchen essen.`
                 );
                 readlineSync.keyInPause(
-                    `Du hast einen Apfelkuchen gegessen.dein Full-Eigenschaft erhöhte sich um 5, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 5.`
+                    `Du hast einen 🥧 Apfelkuchen gegessen.dein Full-Eigenschaft erhöhte sich um ${chalk.yellowBright(
+                        "5"
+                    )}, deine Affinität-Eigenschaft erhöhte sich ebenfalls um ${chalk.yellowBright(
+                        "5"
+                    )}.`
                 );
-            } else if (!applePie && itemsList.apples) {
+            } else if (!itemsList.applePie && itemsList.apples) {
                 const makeFood = readlineSync.question(
-                    `Wir haben keine Apfelkuchen mehr, aber wir haben noch Äpfel. Möchtest du einen Apfelkuchen backen oder lieber Äpfel essen? (y für Apfelkuchen backen/ e für Äpfel essen): `
+                    `Wir haben keine 🥧 Apfelkuchen mehr, aber wir haben noch 🍎 Äpfel. Möchtest du einen Apfelkuchen backen oder lieber Äpfel essen? (${chalk.green(
+                        "y"
+                    )} für Apfelkuchen backen/ ${chalk.green(
+                        "e"
+                    )} für Äpfel essen): `
                 );
                 if (makeFood.toLowerCase() === "y") {
                     do {
                         this.cook(itemsList);
                         if (canCook) {
                             const cookApplepie = readlineSync.keyIn(
-                                `Apfelkuchen + 1, Wir haben jetzt ${applePie} Apfelkuchen. Möchtest du weitermachen? (y/n)`,
+                                ` 🥧 Apfelkuchen + 1, Wir haben jetzt ${
+                                    itemsList.applePie
+                                } 🥧 Apfelkuchen. Möchtest du weitermachen? ${chalk.green(
+                                    "(y/n)"
+                                )}`,
                                 { limit: "yn" }
                             );
                             if (cookApplepie === "n") break;
@@ -519,12 +579,16 @@ class Pet {
                     this.addAffinity(3);
                     itemsList.apples--;
                     readlineSync.keyInPause(
-                        `Du hast einen Apfel gegessen.dein Full-Eigenschaft erhöhte sich um 2, deine Affinität-Eigenschaft erhöhte sich ebenfalls um 3.`
+                        `Du hast einen 🍎 Apfel gegessen.dein Full-Eigenschaft erhöhte sich um ${chalk.yellowBright(
+                            "2"
+                        )}, deine Affinität-Eigenschaft erhöhte sich ebenfalls um ${chalk.yellowBright(
+                            "3"
+                        )}.`
                     );
                 }
-            } else if (!applePie && !itemsList.apples)
+            } else if (!itemsList.applePie && !itemsList.apples)
                 readlineSync.keyInPause(
-                    `Wir haben nicht genügend Äpfel und Apfelkuchen. Du musst rausgehen und sie pflücken.`
+                    `Wir haben nicht genügend 🍎 Äpfel und 🥧 Apfelkuchen. Du musst rausgehen und sie pflücken.`
                 );
             return;
         }
@@ -536,7 +600,7 @@ class Pet {
             itemsList.flours >= 1 &&
             itemsList.sugar >= 1
         ) {
-            applePie++;
+            itemsList.applePie++;
             itemsList.apples -= 2;
             itemsList.flours--;
             itemsList.sugar--;
@@ -544,7 +608,7 @@ class Pet {
             canCook = true;
 
             // console.log(
-            //     `Apfelkuchen + 1, Wir haben jetzt ${applePie} Apfelkuchen.`
+            //     `Apfelkuchen + 1, Wir haben jetzt ${itemsList.applePie} Apfelkuchen.`
             // );
         } else {
             canCook = false;
@@ -563,12 +627,16 @@ class Pet {
     //    // return `${this.name} hat gespielt!`;
     // }
     healed() {
-        readlineSync.keyInPause(`Deine aktuelle HP ist ${this.HP}`);
+        readlineSync.keyInPause(
+            `Deine aktuelle HP ist ${chalk.yellowBright(`${this.HP}`)}`
+        );
         this.addHP(200);
 
         // console.log(`${attacker.playerName} increase his 5 healthPoints `);
         readlineSync.keyInPause(
-            `Nach der Behandlung ist deine HP ist ${this.HP}, bereits auf dem Maximalwert.`
+            `Nach der Behandlung ist deine HP ist ${chalk.yellowBright(
+                `${this.HP}`
+            )}, bereits auf dem Maximalwert.`
         );
     }
 
@@ -593,10 +661,12 @@ class Pet {
         while (true) {
             let result = [];
             const guess = readlineSync.question(
-                "Gib mir eine nicht wiederholende Vier aus den Zahlen 0 bis 9 (q for quit): "
+                `Gib mir eine nicht wiederholende Vier aus den Zahlen 0 bis 9 (${chalk.green(
+                    "q"
+                )} for quit): `
             );
             if (guess === "q") break;
-            console.log("deine zahle ist: ", guess);
+            console.log("deine zahle ist: ", chalk.yellowBright(guess));
             console.log("Round ", round);
             // console.log(randomNumArr);
             for (let i = 0; i < randomNumArr.length; i++) {
@@ -608,7 +678,7 @@ class Pet {
 
             if (!result.every((e) => e === "🐃"))
                 console.log(
-                    `Round${round}, your answer is ${result}, not collect, continue... `
+                    `Runde ${round}, deine Antwort ist ${result}, nicht korrekt, bitte weitermachen...`
                 );
             if (result.every((e) => e === "🐃")) {
                 if (round <= 3) {
@@ -617,7 +687,13 @@ class Pet {
                     console.log(
                         `🎆 Wow,${chalk.blue(
                             petName
-                        )}, du bist wirklich großartig! Du hast es nur in ${round} Versuchen geschafft 🥇❗❗❗ 🎆\nDein IQ-Egenschaft erhöhte sich um 10, deine Affinität-Egenschaft erhöhte sich ebenfalls um 5.`
+                        )}, du bist wirklich großartig! Du hast es nur in ${chalk.yellowBright(
+                            round
+                        )} Versuchen geschafft 🥇❗❗❗ 🎆\nDein IQ-Egenschaft erhöhte sich um ${chalk.yellowBright(
+                            "10"
+                        )}, deine Affinität-Egenschaft erhöhte sich ebenfalls um ${chalk.yellowBright(
+                            "5"
+                        )}.`
                     );
                 }
                 if (round > 3 && round < 7) {
@@ -626,7 +702,13 @@ class Pet {
                     console.log(
                         `${chalk.blue(
                             petName
-                        )}, Du bist sehr gut, du hast es nur in ${round} Versuchen geschafft. Beim nächsten Mal wird es noch besser sein 🥈❗\nDein IQ-Egenschaft erhöhte sich um 6, deine Affinität-Egenschaft erhöhte sich ebenfalls um 3. `
+                        )}, Du bist sehr gut, du hast es nur in ${chalk.yellowBright(
+                            round
+                        )} Versuchen geschafft. Beim nächsten Mal wird es noch besser sein 🥈❗\nDein IQ-Egenschaft erhöhte sich um ${chalk.yellowBright(
+                            "6"
+                        )}, deine Affinität-Egenschaft erhöhte sich ebenfalls um ${chalk.yellowBright(
+                            "3"
+                        )}. `
                     );
                 }
                 if (round >= 7) {
@@ -635,13 +717,19 @@ class Pet {
                     console.log(
                         `Herzlichen Glückwunsch,${chalk.blue(
                             petName
-                        )}, du hast es im ${round}ten Versuch geschafft. \nDein IQ-Egenschaft erhöhte sich um 3, deine Affinität-Egenschaft erhöhte sich ebenfalls um 1.`
+                        )}, du hast es im ${chalk.yellowBright(
+                            round
+                        )}ten Versuch geschafft. \nDein IQ-Egenschaft erhöhte sich um ${chalk.yellowBright(
+                            "3"
+                        )}, deine Affinität-Egenschaft erhöhte sich ebenfalls um ${chalk.yellowBright(
+                            "1"
+                        )}.`
                     );
                 }
                 // round = 1;
                 // this.playAgain(randomNumArr);
                 const playAgain = readlineSync.question(
-                    "Do you want to play again? (y/n) "
+                    `Do you want to play again? ${chalk.green("(y/n)")} `
                 );
                 if (playAgain === "y") {
                     console.clear();
@@ -667,12 +755,16 @@ class Pet {
                     console.log(
                         ` 😅 ,${chalk.blue(
                             petName
-                        )}, Spiel vorbei, du hast verloren. Ich wünsche Ihnen einen schönen Tag. Willkommen zur nächsten Herausforderung. \nLeide dein IQ-Egenschaft wurde um 3 reduziert, deine Affinität-Egenschaft wurde um 3 reduziert.`
+                        )}, Spiel vorbei, du hast verloren. Ich wünsche Ihnen einen schönen Tag. Willkommen zur nächsten Herausforderung. \nLeide dein IQ-Egenschaft wurde um ${chalk.yellowBright(
+                            "3"
+                        )} reduziert, deine Affinität-Egenschaft wurde um ${chalk.yellowBright(
+                            "3"
+                        )} reduziert.`
                     );
                     // round = 1;
                     // this.playAgain(randomNumArr);
                     const playAgain = readlineSync.question(
-                        "Do you want to play again? (y/n) "
+                        `Do you want to play again? ${chalk.green("(y/n)")} `
                     );
                     if (playAgain === "y") {
                         console.clear();
@@ -692,13 +784,20 @@ class Pet {
         let petCareModes;
         myPetCareMode.name = petName;
         myPetCareMode.type = whichPet;
+
         if (goPetMap === true) this.isPlaying = true;
         while (this.isPlaying) {
             petMaps.printPetMap();
 
             petCareModes = readlineSync.keyIn(
-                "Use 1/2/3/4 to choose (or b to mainMap or Q to quit ): ",
-                { limit: "1234bq" }
+                `Use ${chalk.green("1/2/3/4")} to choose (or ${chalk.green(
+                    "'c'"
+                )} to check treasureChest or ${chalk.green(
+                    "'s'"
+                )} to check status or ${chalk.green(
+                    "'b'"
+                )} to mainMap or ${chalk.green("'q'")} to quit): `,
+                { limit: "1234csbq" }
             );
 
             switch (petCareModes) {
@@ -714,16 +813,60 @@ class Pet {
                 case "4":
                     this.healed();
                     break;
-                case "q":
-                    this.isPlaying = false;
-                    console.log("Game over. Thanks for playing!");
-                    process.exit();
-                // break;
+                case "c":
+                    readlineSync.keyInPause(`
+                     
+                      ________________________
+                      |🍎   ${chalk.yellowBright(
+                          `${itemsList.apples}`
+                      )}    | 🥧   ${chalk.yellowBright(
+                        `${itemsList.applePie}`
+                    )}    |
+                      |----------|-----------|
+                      | Zuker  ${chalk.yellowBright(
+                          `${itemsList.sugar}`
+                      )} | Mehl  ${chalk.yellowBright(
+                        `${itemsList.flours}`
+                    )}   |  
+                      |----------|-----------|  
+                      |______________________|
+                      `);
+                    break;
+                case "s":
+                    readlineSync.keyInPause(`
+                     HP: ${chalk.yellowBright(
+                         `${myPetCareMode.HP}`
+                     )}          IQ: ${chalk.yellowBright(
+                        `${myPetCareMode.IQ}`
+                    )}         Affinity: ${chalk.yellowBright(
+                        `${myPetCareMode.affinity}`
+                    )}
+                        💖              🧠              😄
+                            💖          🧠          😄
+                                       
+                                     ${chalk.blue.bold(petName)}
+
+                            🪄          🗡️           👊 
+                        🪄              🗡️               👊
+             Weapon: ${chalk.blueBright(
+                 `${myPetCareMode.weapons.weaponName}`
+             )}          weaponAttack: ${chalk.yellowBright(
+                        `${myPetCareMode.weapons.weaponAttack}`
+                    )}        Attack: ${chalk.yellowBright(
+                        `${myPetCareMode.attack}`
+                    )}
+                      `);
+                    break;
                 case "b":
                     this.isPlaying = false;
                     restart = true; // go back to main map
                     gameInMainMap.start();
                     break;
+                case "q":
+                    this.isPlaying = false;
+                    console.log("Game over. Thanks for playing!");
+                    process.exit();
+                // break;
                 default:
                     break;
             }
@@ -735,18 +878,50 @@ class Pet {
         if (this.HP > 50) {
             if (this.IQ > 15) {
                 isFight = readlineSync.keyIn(
-                    `Die HP des Feindes sind ${enemy.HP}, die Angriffskraft ist ${enemy.attack}; Deine HP sind ${this.HP}, deine Angriffskraft ist ${this.attack}, Die Angriffskraft deiner Waffe (${this.weapons.weaponName}) beträgt ${this.weapons.weaponAttack} Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                    `Die HP des Feindes sind ${chalk.yellowBright(
+                        `${enemy.HP}`
+                    )}, die Angriffskraft ist ${chalk.yellowBright(
+                        `${enemy.attack}`
+                    )}; Deine HP sind ${chalk.yellowBright(
+                        `${this.HP}`
+                    )}, deine Angriffskraft ist ${chalk.yellowBright(
+                        `${this.attack}`
+                    )}, Die Angriffskraft deiner Waffe (${chalk.blueBright(
+                        `${this.weapons.weaponName}`
+                    )}) beträgt ${chalk.yellowBright(
+                        `${this.weapons.weaponAttack}`
+                    )} Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (${chalk.green(
+                        "'k'"
+                    )} for kämpfen, ${chalk.green(
+                        "'h'"
+                    )} for nach Hause gehen und ${chalk.green(
+                        "'e'"
+                    )} for weiter erkunden)`,
                     { limit: "khe" }
                 );
             } else {
                 if (enemy.HP > this.HP && enemy.attack > this.attack) {
                     isFight = readlineSync.keyIn(
-                        `Gefahr, du könntest wahrscheinlich umkommen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                        `${chalk.bgYellowBright(
+                            "Gefahr"
+                        )}, du könntest wahrscheinlich umkommen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (${chalk.green(
+                            "'k'"
+                        )} for kämpfen, ${chalk.green(
+                            "'h'"
+                        )} for nach Hause gehen und ${chalk.green(
+                            "'e'"
+                        )} for weiter erkunden)`,
                         { limit: "khe" }
                     );
                 } else {
                     isFight = readlineSync.keyIn(
-                        `Du hast möglicherweise die Möglichkeit, deinen Feind zu besiegen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                        `Du hast möglicherweise die Möglichkeit, deinen Feind zu besiegen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (${chalk.green(
+                            "'k'"
+                        )} for kämpfen, ${chalk.green(
+                            "'h'"
+                        )} for nach Hause gehen und ${chalk.green(
+                            "'e'"
+                        )} for weiter erkunden)`,
                         { limit: "khe" }
                     );
                 }
@@ -755,26 +930,37 @@ class Pet {
             this.isFighting = false;
             goPetMap = true;
             readlineSync.keyInPause(
-                `your HP is ${this.HP} now, you must be go home to heal. press any key to continue`
+                `your HP is ${chalk.yellowBright(
+                    `${this.HP}`
+                )} now, you must be go home to heal. press any key to continue`
             );
             myPetCareMode.startPetCareMode();
         } else {
             isFight = readlineSync.keyIn(
-                `Deine Lebenspunkte sind zu niedrig. Es besteht die Möglichkeit, dass du im Kampf sterben wirst. Es wird empfohlen, zunächst nach Hause zu gehen und dich zu heilen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (k for kämpfen, h for nach Hause gehen und e for weiter erkunden)`,
+                `Deine Lebenspunkte sind zu niedrig. Es besteht die Möglichkeit, dass du im Kampf sterben wirst. Es wird empfohlen, zunächst nach Hause zu gehen und dich zu heilen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (${chalk.green(
+                    "'k'"
+                )} for kämpfen, ${chalk.green(
+                    "'h'"
+                )} for nach Hause gehen und ${chalk.green(
+                    "'e'"
+                )} for weiter erkunden)`,
                 { limit: "khe" }
             );
         }
         if (isFight === "k") {
             console.log(
-                `Deine Basisangriffskraft beträgt ${
-                    myPetCareMode.attack
-                }, du benutzt die Waffe ${
-                    myPetCareMode.weapons.weaponName
-                }, welche eine Angriffskraft von ${
-                    myPetCareMode.weapons.weaponAttack
-                } hat. Also beträgt deine Gesamtangriffskraft ${
-                    myPetCareMode.attack + myPetCareMode.weapons.weaponAttack
-                }.`
+                `Deine Basisangriffskraft beträgt ${chalk.yellowBright(
+                    `${myPetCareMode.attack}`
+                )}, du benutzt die Waffe ${chalk.blueBright(
+                    `${myPetCareMode.weapons.weaponName}`
+                )}, welche eine Angriffskraft von ${chalk.yellowBright(
+                    `${myPetCareMode.weapons.weaponAttack}`
+                )} hat. Also beträgt deine Gesamtangriffskraft ${chalk.yellowBright(
+                    `${
+                        myPetCareMode.attack +
+                        myPetCareMode.weapons.weaponAttack
+                    }`
+                )}.`
             );
 
             this.fight(enemiesList[randomEnemy]);
@@ -796,12 +982,20 @@ class Pet {
             enemy.HP <= 0 ? (enemy.HP = 0) : enemy.HP;
 
             readlineSync.keyInPause(
-                `${petName} fight ${enemy.name}(enemy's HP is ${enemy.HP}), press any key to continue`
+                `${chalk.blue.bold(petName)} fight ${chalk.red.bold(
+                    enemy.name
+                )}(his HP is ${chalk.yellowBright.bold(
+                    enemy.HP
+                )}), press any key to continue`
             );
             this.HP = this.HP - enemy.attack;
             this.HP <= 0 ? (this.HP = 0) : this.HP;
             readlineSync.keyInPause(
-                `${enemy.name} fight ${petName}(your HP is ${this.HP}), press any key to continue`
+                `${chalk.red.bold(enemy.name)} fight ${chalk.blue.bold(
+                    petName
+                )}(your HP is ${chalk.yellowBright.bold(
+                    this.HP
+                )}), press any key to continue`
             );
             // console.log(
             //     `${this.playerName} fight ${enemy.playerName}(${enemy.HP})`
@@ -821,7 +1015,9 @@ class Pet {
                 this.reduceAffinity(5);
                 this.reduceFull(5);
                 readlineSync.keyInPause(
-                    `Deine HP beträgt jetzt ${this.HP}, du musst nach Hause gehen, um dich zu heilen. Drücke eine beliebige Taste, um fortzufahren.`
+                    `Deine HP beträgt jetzt ${chalk.yellowBright.bold(
+                        this.HP
+                    )}, du musst nach Hause gehen, um dich zu heilen. Drücke eine beliebige Taste, um fortzufahren.`
                 );
                 myPetCareMode.startPetCareMode();
                 break;
@@ -835,7 +1031,15 @@ class Pet {
         );
 
         const equipWeapon = readlineSync.question(
-            `Du hast ${WeaponsList[randomWeaponIndex].weaponName} erhalten, Angriffskraft ist ${WeaponsList[randomWeaponIndex].weaponAttack}; Dein aktuelles ist ${this.weapons.weaponName}, Angriffskraft ist ${this.weapons.weaponAttack}. Möchtest du es ersetzen? (y/n)`
+            `Du hast ${chalk.blueBright(
+                `${WeaponsList[randomWeaponIndex].weaponName}`
+            )} erhalten, Angriffskraft ist ${chalk.yellowBright(
+                `${WeaponsList[randomWeaponIndex].weaponAttack}`
+            )}; Dein aktuelles Waffe ist ${chalk.blueBright(
+                `${this.weapons.weaponName}`
+            )}, Angriffskraft ist ${chalk.yellowBright(
+                `${this.weapons.weaponAttack}`
+            )}. Möchtest du es ersetzen? (y/n)`
         );
         if (equipWeapon === "y") {
             this.weapons.weaponName = WeaponsList[randomWeaponIndex].weaponName;
@@ -843,7 +1047,13 @@ class Pet {
                 WeaponsList[randomWeaponIndex].weaponAttack;
         }
         isFight = readlineSync.keyIn(
-            `Du hast ${enemy.name} besiegt. Möchtest du nach Hause gehen oder weiter erkunden? (h for nach Hause gehen und e for weiter erkunden)`,
+            `Du hast ${chalk.red.bold(
+                enemy.name
+            )} besiegt. Möchtest du nach Hause gehen oder weiter erkunden? (${chalk.green(
+                "'h'"
+            )} for nach Hause gehen und ${chalk.green(
+                "'e'"
+            )} for weiter erkunden)`,
             { limit: "he" }
         );
         if (isFight === "h") {
@@ -910,9 +1120,9 @@ class AllPetMaps {
             `                                                                        `,
             `                                                                        `,
             `                                                                        `,
-            `                                                                        `,
             `  1. feeding    2. playing (coming soon)   3. quiz   4. to heal         `,
             ` (you can chose 1, 2, 3 or 4, to play with your pet;)                   `,
+            ` (press 'c' to check your treasure chest, 's' to check your current status)`,
             ` (press "q" to quit the game, press "b" to go back to main map)         `,
             "================================ 💓💓💓 ================================",
         ];
@@ -937,9 +1147,9 @@ class AllPetMaps {
             `                                                                        `,
             `                                                                        `,
             `                                                                        `,
-            `                                                                        `,
             `  1. feeding   2. playing (coming soon)   3. quiz   4. to heal          `,
             ` (you can chose 1, 2, 3 or 4, to play with your pet;)                   `,
+            ` (press 'c' to check your treasure chest, 's' to check your current status)`,
             ` (press "q" to quit the game, press "b" to go back to main map)         `,
             "================================ 💓💓💓 ================================",
         ];
@@ -965,9 +1175,10 @@ class AllPetMaps {
             `         **     **                                                      `,
             `           *****                                                        `,
             `                                                                        `,
-            `                                                                        `,
+
             `  1. feeding    2. playing (coming soon)   3. quiz   4. to heal         `,
-            ` (you can chose 1, 2, 3 or 4, to play with your pet;)                   `,
+            ` (you can chose 1, 2, 3 or 4, to play with your pet)                   `,
+            ` (press 'c' to check your treasure chest, 's' to check your current status)`,
             ` (press "q" to quit the game, press "b" to go back to main map)         `,
             "================================ 💓💓💓 ================================",
         ];
@@ -1103,28 +1314,28 @@ class AllPetMaps {
         ];
         this.mapWolfFight = [
             "🐺================ 💓🐺💓 ===============🐺",
-            `🛡️                            __          🗡️`,
-            `🗡️                          .d$$b        🛡️`,
-            `🛡️                        .' TO$;\\       🗡️`,
-            `🗡️                       /  : TP._;      🛡️`,
-            `🛡️                      / _.;  :Tb|      🗡️`,
-            `🗡️                     /   /   ;j$j      🛡️`,
-            `🛡️                 _.-"       d$$$$      🗡️`,
+            `🛡️                            __           🗡️`,
+            `🗡️                          .d$$b           🛡️`,
+            `🛡️                        .' TO$;\\         🗡️`,
+            `🗡️                       /  : TP._;         🛡️`,
+            `🛡️                      / _.;  :Tb|         🗡️`,
+            `🗡️                     /   /   ;j$j         🛡️`,
+            `🛡️                 _.-"       d$$$$         🗡️`,
             `🗡️                .' ..       d$$$$;       🛡️`,
             "🛡️               /  /P'      d$$$$P. |     🗡️",
             `🗡️              /   "      .d$$$P' |\\^"l  🛡️`,
-            "🛡️           .'           `T$P^'''''  :  🗡️",
-            `🗡️       ._.'      _.'                ;  🛡️`,
-            '🛡️    `-.-".-"-"" ._.       _.-"    .-"  🗡️',
-            '🗡️   `.-" _____  ._              .-"     🛡️',
-            `🛡️  -(.g$$$$$$$b.              .'        🗡️`,
-            `🗡️     ""^^T$$$P^)            .(:        🛡️`,
-            `🛡️                                       🗡️`,
-            `🗡️                                       🛡️`,
-            `       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷            `,
-            `🗡️                                       🛡️`,
-            `🛡️                                       🗡️`,
-            `🗡️                                       🛡️`,
+            "🛡️           .'           `T$P^'''''  :    🗡️",
+            `🗡️       ._.'      _.'                ;    🛡️`,
+            '🛡️    `-.-".-"-"" ._.       _.-"    .-"    🗡️',
+            '🗡️   `.-" _____  ._              .-"       🛡️',
+            `🛡️  -(.g$$$$$$$b.              .'          🗡️`,
+            `🗡️     ""^^T$$$P^)            .(:          🛡️`,
+            `🛡️                                         🗡️`,
+            `🗡️                                         🛡️`,
+            `       HP 🩷🩷🩷🩷🩷🩷🩷🩷🩷🩷              `,
+            `🗡️                                         🛡️`,
+            `🛡️                                         🗡️`,
+            `🗡️                                         🛡️`,
             "🐺================ 💓🐺💓 ===============🐺",
         ];
     }
@@ -1215,35 +1426,43 @@ class AllPetMaps {
                 const updatedRow = rowPet.replace(
                     // /myName: \d+/,
                     /myName: /,
-                    `${myPetCareMode.name}`
+                    `${chalk.blue.bold(myPetCareMode.name)}`
                 );
                 // console.log(petName);
                 console.log(updatedRow);
             } else if (rowPet.includes("full:")) {
                 const updatedRow = rowPet.replace(
                     /full: \d+/,
-                    `full: ${myPetCareMode.full} (max: 10)`
+                    `full: ${myPetCareMode.full} ${chalk.yellowBright(
+                        "(max: 10)"
+                    )}`
                 );
                 // console.log(myPetCareMode.full);
                 console.log(updatedRow);
             } else if (rowPet.includes("IQ:")) {
                 const updatedRow = rowPet.replace(
                     /IQ: \d+/,
-                    `IQ: ${myPetCareMode.IQ} (max: ${maxIQ})`
+                    `IQ: ${myPetCareMode.IQ} ${chalk.yellowBright(
+                        `(max: ${chalk.yellowBright(maxIQ)})`
+                    )}`
                 );
                 // console.log(myPetCareMode.full);
                 console.log(updatedRow);
             } else if (rowPet.includes("affinity:")) {
                 const updatedRow = rowPet.replace(
                     /affinity: \d+/,
-                    `affinity: ${myPetCareMode.affinity} (max: ${maxAffinity})`
+                    `affinity: ${myPetCareMode.affinity} ${chalk.yellowBright(
+                        `(max: ${chalk.yellowBright(maxAffinity)})`
+                    )}`
                 );
                 // console.log(myPetCareMode.full);
                 console.log(updatedRow);
             } else if (rowPet.includes("HP:")) {
                 const updatedRow = rowPet.replace(
                     /HP: \d+/,
-                    `HP: ${myPetCareMode.HP} (max: ${maxHP})`
+                    `HP: ${myPetCareMode.HP} ${chalk.yellowBright(
+                        `(max: ${chalk.yellowBright(maxHP)})`
+                    )}`
                 );
                 // console.log(myPetCareMode.full);
                 console.log(updatedRow);
