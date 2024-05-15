@@ -7,7 +7,6 @@ import chalkAnimation from "chalk-animation";
 
 import { createSpinner } from "nanospinner";
 import { setTimeout as waitingTime } from "timers/promises";
-// console.clear();
 
 const greetWord1 = "Willkommen zu deinem Abenteuer \n";
 const greetWord2 =
@@ -136,12 +135,12 @@ class MainMap {
             "X             🌻                🌻               🎄                       🎄                  X",
             "X             🌻                🌻              🎄                     🎄                     X",
             "X             🌻                🌻                                   🎄                       X",
-            "X             🌻                                                      🎄                     X",
+            "X             🌻                                                      🎄                      X",
             "X             🌻                                 🎄🎄🎄                 🎄🎄                  X",
             "X             🌻                                      🎄                   🎄                 X",
-            "X             🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻                 🎄                      🎄                 X",
+            "X             🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻                 🎄                      🎄                X",
             "X                                                 🎄                      🎄                  X",
-            "X                                                🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄                   X",
+            "X                                                🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄                  X",
             "X                                                                                             X",
             "X                                                                                             X",
             "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -149,7 +148,7 @@ class MainMap {
         this.playerPosition = { x: 1, y: 1 };
         this.isRunning = true;
         this.isAtHome = false;
-        // this.isAdventureMap = false;
+        this.isAdventureMap = false;
 
         this.applePositions = []; //随机生成苹果的位置
         this.enemyPosition = []; //随机产生怪兽的位置，暂时只产生3个
@@ -337,6 +336,7 @@ class MainMap {
                     )} to move (or ${chalk.green(
                         "h"
                     )} to houseMap or ${chalk.green("q")} to quit ): `,
+                    // "Use W/A/S/D to move ( or Q to quit ): ",
                     { limit: "wasdqh" }
                 );
             } else if (
@@ -346,6 +346,7 @@ class MainMap {
                 this.playerPosition.y >= 5 &&
                 this.playerPosition.y <= 15
             ) {
+                this.isAdventureMap = true;
                 console.log(
                     "Beachte, du bist jetzt auf der Abenteuerkarte. Hier kannst du Glück haben und Schätze 🍎 finden, aber natürlich auch Gefahren 🗡️ begegnen.!"
                 );
@@ -354,7 +355,6 @@ class MainMap {
                 this.getApplesAndEnemies(itemsList);
 
                 // 下面的这行代码必须要在，不然会出现代码乱跳的琴况
-
                 move = readlineSync.keyIn(
                     `Use ${chalk.green("W")} / ${chalk.green(
                         "A"
@@ -365,7 +365,7 @@ class MainMap {
                 );
             } else {
                 this.isAtHome = false;
-
+                this.isAdventureMap = false;
                 move = readlineSync.keyIn(
                     `Use ${chalk.green("W")} / ${chalk.green(
                         "A"
@@ -385,7 +385,6 @@ class MainMap {
                 );
                 if (isPetCare === "y") {
                     this.isRunning = false;
-                    restart = false;
                     goPetMap = true;
                     // myPetCareMode.name = petName;
                     // myPetCareMode.type = whichPet;
@@ -422,7 +421,6 @@ let randomEnemy;
 let enemyType = "";
 let enemyRandom;
 let canCook;
-
 class Pet {
     constructor(
         name = petName,
@@ -861,22 +859,8 @@ class Pet {
                     break;
                 case "b":
                     this.isPlaying = false;
-                    if (this.HP === 0) {
-                        restart = false;
-                        goToFight = false;
-
-                        readlineSync.keyInPause(
-                            `Deine Lebenspunkte sind ${chalk.yellowBright(
-                                "0"
-                            )}, du kannst nirgendwohin gehen. Du musst geheilt werden.`
-                        );
-                        myPetCareMode.startPetCareMode();
-                    } else {
-                        restart = true; // go back to main map
-                        goToFight = true;
-
-                        gameInMainMap.start();
-                    }
+                    restart = true; // go back to main map
+                    gameInMainMap.start();
                     break;
                 case "q":
                     this.isPlaying = false;
@@ -944,7 +928,6 @@ class Pet {
             }
         } else if (this.HP === 0) {
             this.isFighting = false;
-            // canFight = false;
             goPetMap = true;
             readlineSync.keyInPause(
                 `your HP is ${chalk.yellowBright(
@@ -952,7 +935,6 @@ class Pet {
                 )} now, you must be go home to heal. press any key to continue`
             );
             myPetCareMode.startPetCareMode();
-            return;
         } else {
             isFight = readlineSync.keyIn(
                 `Deine Lebenspunkte sind zu niedrig. Es besteht die Möglichkeit, dass du im Kampf sterben wirst. Es wird empfohlen, zunächst nach Hause zu gehen und dich zu heilen. Möchtest du kämpfen, nach Hause gehen oder weiter erkunden? (${chalk.green(
@@ -1038,7 +1020,6 @@ class Pet {
                     )}, du musst nach Hause gehen, um dich zu heilen. Drücke eine beliebige Taste, um fortzufahren.`
                 );
                 myPetCareMode.startPetCareMode();
-                //return;
                 break;
             }
         }
