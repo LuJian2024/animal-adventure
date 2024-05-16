@@ -56,12 +56,12 @@ async function printPetSelection() {
     while (true) {
         console.log(
             `Wähle dein Haustier aus: (Use ${chalk.bold.yellow(
-                "u"
+                "'u'"
             )}(up ⬆️) and ${chalk.bold.yellow(
-                "d"
+                "'d'"
             )}(down ⬇️) to navigate, press ${chalk.bold.blue(
-                "Space"
-            )} to select), press ${chalk.bold.red("q")} to quit the game)`
+                "'Space'"
+            )} to select), press ${chalk.bold.red("'q'")} to quit the game)`
         );
         for (let i = 0; i < petType.length; i++) {
             if (i === selectedIndex) {
@@ -84,7 +84,6 @@ async function printPetSelection() {
             selectedIndex =
                 selectedIndex === petType.length - 1 ? 0 : selectedIndex + 1;
         } else if (key === "q") {
-            // Ctrl+C 退出程序
             process.exit();
         } else if (key === " ") {
             // space键表示选定
@@ -102,7 +101,7 @@ async function printPetSelection() {
         )} 。。。。。。。。。`
     ).start();
 
-    await waitingTime(2000);
+    await waitingTime(1500);
     spinner.success({
         text: gradient.instagram.multiline(
             "Wir beginnen ein neues Abenteuer! 🥳"
@@ -261,7 +260,7 @@ class MainMap {
         }
         // 打印玩家当前位置坐标
         console.log("player's Position:", this.playerPosition);
-        console.log("truesure's Position ", this.applePositions);
+        console.log("treasure's Position ", this.applePositions);
         console.log("enemy's Position ", this.enemyPosition);
     }
 
@@ -316,7 +315,6 @@ class MainMap {
         if (restart === true) this.isRunning = true;
         this.generateApples(myPetCareMode.affinity);
         while (this.isRunning) {
-            console.log(this.isRunning);
             if (!this.isRunning) break;
             this.printMap();
 
@@ -492,6 +490,12 @@ class Pet {
     //foodStock() {}
 
     feed() {
+        if (this.HP === 0) {
+            readlineSync.keyInPause(
+                "❗🏥 Du bist dem Tode nahe, ich kann dich nicht füttern. Bitte lass dich schnell behandeln 🏥❗"
+            );
+            return;
+        }
         while (true) {
             // console.log(this.full);
             if (this.full === 10) {
@@ -657,8 +661,15 @@ class Pet {
     quiz() {
         //bulls and cows game
         let randomNumArr = [];
+        if (this.HP === 0) {
+            readlineSync.keyInPause(
+                "❗🏥 Du bist dem Tode nahe, ich kann nicht mit dir Quiz machen. Bitte lass dich schnell behandeln 🏥❗"
+            );
+            return;
+        }
         this.randomNumForQuiz(randomNumArr);
         let round = 1;
+
         console.log(`(${randomNumArr})`); //显示结果，为了尽快的显示
         while (true) {
             let result = [];
@@ -866,9 +877,9 @@ class Pet {
                         goToFight = false;
 
                         readlineSync.keyInPause(
-                            `Deine Lebenspunkte sind ${chalk.yellowBright(
+                            `❗🏥 Deine Lebenspunkte sind ${chalk.yellowBright(
                                 "0"
-                            )}, du kannst nirgendwohin gehen. Du musst geheilt werden.`
+                            )}, du kannst nirgendwohin gehen. Du musst geheilt werden 🏥❗`
                         );
                         myPetCareMode.startPetCareMode();
                     } else {
